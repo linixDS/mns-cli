@@ -9,3 +9,5 @@ fortigate/obj/
 
 network/bin/
 network/obj/
+
+build/

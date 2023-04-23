@@ -22,6 +22,11 @@ if [ "$1" == "install" ] ; then
     cp ./network/bin/Debug/net7.0/network.dll ././build/modules/network/
     cp ./network/bin/Debug/net7.0/LibTerminal.dll ././build/modules/network/
 
+    cp ./mns-cli/bin/Debug/net7.0/mns-cli.dll ././build/
+    cp ./mns-cli/bin/Debug/net7.0/mns-cli ././build/
+    cp ./LibTerminal/bin/Debug/net7.0/LibTerminal.dll ././build/
+    cp ./mns-cli/bin/Debug/net7.0/mns-cli.runtimeconfig.json ././build/
+
     exit 0
 fi
 

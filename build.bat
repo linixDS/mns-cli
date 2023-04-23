@@ -12,8 +12,12 @@ if "%1" == "install" (
 
      if not exist ".\build\modules\network" mkdir .\build\modules\network
 
-     cp .\network\bin\Debug\net7.0\network.dll .\.\build\modules\network\
-     cp .\network\bin\Debug\net7.0\LibTerminal.dll .\.\build\modules\network\
+     copy .\network\bin\Debug\net7.0\network.dll .\.\build\modules\network\
+     copy .\network\bin\Debug\net7.0\LibTerminal.dll .\.\build\modules\network\
+
+     copy .\mns-cli\bin\Debug\net7.0\mns-cli.dll .\.\build\
+     copy .\mns-cli\bin\Debug\net7.0\mns-cli .\.\build\
+     copy .\LibTerminal\bin\Debug\net7.0\LibTerminal.dll .\.\build\
 
     exit 0
 )
@@ -22,28 +26,28 @@ if "%1" == "compile" (
     echo "----------------------------------------------"
     echo "::Compiling library LibTerminal.dll"
     echo "----------------------------------------------"
-    cd ./LibTerminal/
+    cd .\LibTerminal\
     dotnet build
     cd ..
 
     echo "----------------------------------------------"
     echo "::Compiling program mns-cli"
     echo "----------------------------------------------"
-    cd ./mns-cli/
+    cd .\mns-cli\
     dotnet build
     cd ..
 
     echo "----------------------------------------------"
     echo "::Compiling module network.dll"
     echo "----------------------------------------------"
-    cd ./network/
+    cd .\network\
     dotnet build
     cd ..
 
     echo "----------------------------------------------"
     echo "Compiling module fortigate.dll"
     echo "----------------------------------------------"
-    cd ./fortigate/
+    cd .\fortigate\
     dotnet build
     cd ..
     exit 0
