@@ -26,23 +26,33 @@ if [ "$1" == "install" ] ; then
 fi
 
 if [ "$1" == "compile" ] ; then
-
+    echo "----------------------------------------------"
+    echo "::Compiling library LibTerminal.dll"
+    echo "----------------------------------------------"
     cd ./LibTerminal/
     dotnet build
     cd ..
 
+    echo "----------------------------------------------"
+    echo "::Compiling program mns-cli"
+    echo "----------------------------------------------"
     cd ./mns-cli/
     dotnet build
     cd ..
 
-    cd ./geoip/
-    dotnet build
-    cd ..
-
+    echo "----------------------------------------------"
+    echo "::Compiling module network.dll"
+    echo "----------------------------------------------"
     cd ./network/
     dotnet build
     cd ..
 
+    echo "----------------------------------------------"
+    echo "Compiling module fortigate.dll"
+    echo "----------------------------------------------"
+    cd ./fortigate/
+    dotnet build
+    cd ..
     exit 0
 fi
 

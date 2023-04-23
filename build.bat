@@ -19,23 +19,33 @@ if "%1" == "install" (
 )
 
 if "%1" == "compile" (
-
-    cd .\LibTerminal\
+    echo "----------------------------------------------"
+    echo "::Compiling library LibTerminal.dll"
+    echo "----------------------------------------------"
+    cd ./LibTerminal/
     dotnet build
     cd ..
 
-    cd .\mns-cli\
+    echo "----------------------------------------------"
+    echo "::Compiling program mns-cli"
+    echo "----------------------------------------------"
+    cd ./mns-cli/
     dotnet build
     cd ..
 
-    cd .\geoip\
+    echo "----------------------------------------------"
+    echo "::Compiling module network.dll"
+    echo "----------------------------------------------"
+    cd ./network/
     dotnet build
     cd ..
 
-    cd .\network\
+    echo "----------------------------------------------"
+    echo "Compiling module fortigate.dll"
+    echo "----------------------------------------------"
+    cd ./fortigate/
     dotnet build
     cd ..
-
     exit 0
 )
 
