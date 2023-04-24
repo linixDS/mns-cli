@@ -3,7 +3,7 @@ using System.Text;
 using System.IO;
 using System.Diagnostics;
 
-namespace LibTerminal
+namespace Core
 {
     public class Crypto
     {

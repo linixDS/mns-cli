@@ -9,7 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LibTerminal\LibTerminal.csproj" />
+    <ProjectReference Include="..\core\core.csproj" />
+    <ProjectReference Include="..\runtime\runtime.csproj" />
   </ItemGroup>
 
 </Project>

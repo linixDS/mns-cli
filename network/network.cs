@@ -1,4 +1,4 @@
-﻿using LibTerminal;
+﻿using Core;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Net.NetworkInformation;
@@ -25,37 +25,6 @@ namespace network
             Console.WriteLine("\t network interface");
             Console.WriteLine("\t network wlan");
             Console.WriteLine("");
-        }
-    }
-
-    public class MODULECLASS
-    {
-        public void help()
-        {
-            Console.Clear();
-            Console.WriteLine("NAME");
-            Console.WriteLine("\tNetwork");
-            Console.WriteLine("");
-            Console.WriteLine("SHORT DESCRIPTION");
-            Console.WriteLine("\tNetwork tools and geo location ip address.");
-            Console.WriteLine("");
-            Console.WriteLine("SYNTEX");
-            Console.WriteLine("\t network module help");
-            Console.WriteLine("\t network module version");
-            Console.WriteLine("\t network module info");
-            Console.WriteLine("");
-        }
-        public void version()
-        {
-            Console.WriteLine("Module version: 1.0.0.0");
-        }
-
-        public void info()
-        {
-            Console.WriteLine("Name   : Network");
-            Console.WriteLine("Author : Dariusz Marcisz");
-            Console.WriteLine("Licence: GPL");
-            Console.WriteLine("Dependences: none");
         }
     }
 

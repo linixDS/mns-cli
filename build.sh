@@ -14,17 +14,32 @@ if [ "$1" == "install" ] ; then
     fi
 
     cp ./fortigate/bin/Debug/net7.0/fortigate.dll ././build/modules/fortigate/
-    cp ./fortigate/bin/Debug/net7.0/LibTerminal.dll ././build/modules/fortigate/
+    cp ./fortigate/bin/Debug/net7.0/core.dll ././build/modules/fortigate/
+    cp ./fortigate/bin/Debug/net7.0/package.json ././build/modules/fortigate/
+
+    if [ ! -d "./build/modules/module" ]; then
+         mkdir ./build/modules/module
+    fi
+
+    cp ./module/bin/Debug/net7.0/module.dll ././build/modules/module/
+    cp ./module/bin/Debug/net7.0/core.dll ././build/modules/module/
+    cp ./module/bin/Debug/net7.0/package.json ././build/modules/module/
+
+
 
     if [ ! -d "./build/modules/network" ]; then
          mkdir ./build/modules/network
     fi
+
     cp ./network/bin/Debug/net7.0/network.dll ././build/modules/network/
-    cp ./network/bin/Debug/net7.0/LibTerminal.dll ././build/modules/network/
+    cp ./network/bin/Debug/net7.0/core.dll ././build/modules/network/
+    cp ./network/bin/Debug/net7.0/package.json ././build/modules/network/
 
     cp ./mns-cli/bin/Debug/net7.0/mns-cli.dll ././build/
     cp ./mns-cli/bin/Debug/net7.0/mns-cli ././build/
-    cp ./LibTerminal/bin/Debug/net7.0/LibTerminal.dll ././build/
+    cp ./core/bin/Debug/net7.0/core.dll ././build/
+    cp ./runtime/bin/Debug/net7.0/runtime.dll ././build/
+
     cp ./mns-cli/bin/Debug/net7.0/mns-cli.runtimeconfig.json ././build/
 
     exit 0
@@ -32,9 +47,16 @@ fi
 
 if [ "$1" == "compile" ] ; then
     echo "----------------------------------------------"
-    echo "::Compiling library LibTerminal.dll"
+    echo "::Compiling library core.dll"
     echo "----------------------------------------------"
-    cd ./LibTerminal/
+    cd ./core/
+    dotnet build
+    cd ..
+
+    echo "----------------------------------------------"
+    echo "::Compiling library runtime.dll"
+    echo "----------------------------------------------"
+    cd ./runtime/
     dotnet build
     cd ..
 
@@ -58,6 +80,14 @@ if [ "$1" == "compile" ] ; then
     cd ./fortigate/
     dotnet build
     cd ..
+
+    echo "----------------------------------------------"
+    echo "Compiling module module.dll"
+    echo "----------------------------------------------"
+    cd ./module/
+    dotnet build
+    cd ..
+
     exit 0
 fi
 

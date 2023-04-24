@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LibTerminal\LibTerminal.csproj" />
+    <ProjectReference Include="..\core\core.csproj" />
   </ItemGroup>
 
 </Project>

@@ -8,25 +8,41 @@ if "%1" == "install" (
 
      if not exist ".\build\modules\fortigate" mkdir .\build\modules\fortigate
      copy .\fortigate\bin\Debug\net7.0\fortigate.dll .\.\build\modules\fortigate\
-     copy .\fortigate\bin\Debug\net7.0\LibTerminal.dll .\.\build\modules\fortigate\
+     copy .\fortigate\bin\Debug\net7.0\core.dll .\.\build\modules\fortigate\
+     copy .\fortigate\bin\Debug\net7.0\package.json .\.\build\modules\fortigate\
+
+     if not exist ".\build\modules\module" mkdir .\build\modules\module
+     copy .\module\bin\Debug\net7.0\fortigate.dll .\.\build\modules\module\
+     copy .\module\bin\Debug\net7.0\core.dll .\.\build\modules\module\
+     copy .\module\bin\Debug\net7.0\package.json .\.\build\modules\module\
+
 
      if not exist ".\build\modules\network" mkdir .\build\modules\network
 
      copy .\network\bin\Debug\net7.0\network.dll .\.\build\modules\network\
-     copy .\network\bin\Debug\net7.0\LibTerminal.dll .\.\build\modules\network\
+     copy .\network\bin\Debug\net7.0\core.dll .\.\build\modules\network\
+     copy .\network\bin\Debug\net7.0\package.json .\.\build\modules\network\
 
      copy .\mns-cli\bin\Debug\net7.0\mns-cli.dll .\.\build\
-     copy .\mns-cli\bin\Debug\net7.0\mns-cli .\.\build\
-     copy .\LibTerminal\bin\Debug\net7.0\LibTerminal.dll .\.\build\
+     copy .\mns-cli\bin\Debug\net7.0\mns-cli.exe .\.\build\
+     copy .\core\bin\Debug\net7.0\core.dll .\.\build\
+     copy .\runtime\bin\Debug\net7.0\runtime.dll .\.\build\
 
     exit 0
 )
 
 if "%1" == "compile" (
     echo "----------------------------------------------"
-    echo "::Compiling library LibTerminal.dll"
+    echo "::Compiling library core.dll"
     echo "----------------------------------------------"
-    cd .\LibTerminal\
+    cd .\core\
+    dotnet build
+    cd ..
+
+    echo "----------------------------------------------"
+    echo "::Compiling library runtime.dll"
+    echo "----------------------------------------------"
+    cd .\runtime\
     dotnet build
     cd ..
 
@@ -45,11 +61,20 @@ if "%1" == "compile" (
     cd ..
 
     echo "----------------------------------------------"
+    echo "::Compiling module module.dll"
+    echo "----------------------------------------------"
+    cd .\module\
+    dotnet build
+    cd ..
+
+    echo "----------------------------------------------"
     echo "Compiling module fortigate.dll"
     echo "----------------------------------------------"
     cd .\fortigate\
     dotnet build
     cd ..
+
+
     exit 0
 )
 

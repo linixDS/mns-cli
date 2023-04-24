@@ -7,12 +7,18 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mns-cli", "mns-cli\mns-cli.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "network", "network\network.csproj", "{5A80D71F-7A5C-4A68-AA44-B5807DEE9EEE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibTerminal", "LibTerminal\LibTerminal.csproj", "{DFE06EF2-6395-4F3B-ABB4-9100A76545CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "core", "core\core.csproj", "{DFE06EF2-6395-4F3B-ABB4-9100A76545CC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mikrotik", "mikrotik\mikrotik.csproj", "{B2009926-8167-4B89-B021-8DC76B6B823F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "fortigate", "fortigate\fortigate.csproj", "{885BEB4A-BA49-4CF6-B637-3EA17AA69257}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "runtime", "runtime\runtime.csproj", "{885BEB4A-BA49-4CF6-B637-3EA17AA69258}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "module", "module\module.csproj", "{885BEB4A-BA49-4CF6-B637-3EA17AA69259}"
+EndProject
+
+
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +45,14 @@ Global
 		{885BEB4A-BA49-4CF6-B637-3EA17AA69257}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{885BEB4A-BA49-4CF6-B637-3EA17AA69257}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{885BEB4A-BA49-4CF6-B637-3EA17AA69257}.Release|Any CPU.Build.0 = Release|Any CPU
+		{885BEB4A-BA49-4CF6-B637-3EA17AA69258}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{885BEB4A-BA49-4CF6-B637-3EA17AA69258}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{885BEB4A-BA49-4CF6-B637-3EA17AA69258}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{885BEB4A-BA49-4CF6-B637-3EA17AA69258}.Release|Any CPU.Build.0 = Release|Any CPU
+		{885BEB4A-BA49-4CF6-B637-3EA17AA69259}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{885BEB4A-BA49-4CF6-B637-3EA17AA69259}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{885BEB4A-BA49-4CF6-B637-3EA17AA69259}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{885BEB4A-BA49-4CF6-B637-3EA17AA69259}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

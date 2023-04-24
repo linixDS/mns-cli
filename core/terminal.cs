@@ -1,4 +1,4 @@
-﻿namespace LibTerminal
+﻿namespace Core
 {
     public class Terminal
     {
@@ -33,11 +33,16 @@
             if (isError)
                 Console.Error.WriteLine(message);
             else
-                Console.WriteLine(message);
+            {
+                 Console.WriteLine(message);
+            }
 
             Console.ForegroundColor = currentForeground;
             Console.BackgroundColor = currentBackground;
         }
+        
+
+    
 
         public static void ErrorWrite(string message)
         {

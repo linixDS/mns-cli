@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "oQNxmUN+k56C2/gTQNPNUOExKFZvvwG24tJsgFn+HHsXUIH93L6pZBwhgMlX+hbNVketLFa82CxtcxjNieenXQ==",
+  "success": true,
+  "projectFilePath": "/home/linix/Projekty/mns-cli-git/core/core.csproj",
+  "expectedPackageFiles": [
+    "/home/linix/.nuget/packages/microsoft.aspnetcore.app.ref/7.0.3/microsoft.aspnetcore.app.ref.7.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}

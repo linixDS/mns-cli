@@ -1,0 +1,15 @@
+/home/linix/Projekty/mns-cli-git/module/obj/Debug/net7.0/module.csproj.AssemblyReference.cache
+/home/linix/Projekty/mns-cli-git/module/obj/Debug/net7.0/module.GeneratedMSBuildEditorConfig.editorconfig
+/home/linix/Projekty/mns-cli-git/module/obj/Debug/net7.0/module.AssemblyInfoInputs.cache
+/home/linix/Projekty/mns-cli-git/module/obj/Debug/net7.0/module.AssemblyInfo.cs
+/home/linix/Projekty/mns-cli-git/module/obj/Debug/net7.0/module.csproj.CoreCompileInputs.cache
+/home/linix/Projekty/mns-cli-git/module/bin/Debug/net7.0/module.deps.json
+/home/linix/Projekty/mns-cli-git/module/bin/Debug/net7.0/module.dll
+/home/linix/Projekty/mns-cli-git/module/bin/Debug/net7.0/module.pdb
+/home/linix/Projekty/mns-cli-git/module/bin/Debug/net7.0/core.dll
+/home/linix/Projekty/mns-cli-git/module/bin/Debug/net7.0/core.pdb
+/home/linix/Projekty/mns-cli-git/module/obj/Debug/net7.0/module.csproj.CopyComplete
+/home/linix/Projekty/mns-cli-git/module/obj/Debug/net7.0/module.dll
+/home/linix/Projekty/mns-cli-git/module/obj/Debug/net7.0/refint/module.dll
+/home/linix/Projekty/mns-cli-git/module/obj/Debug/net7.0/module.pdb
+/home/linix/Projekty/mns-cli-git/module/obj/Debug/net7.0/ref/module.dll

@@ -1,4 +1,4 @@
-﻿using LibTerminal;
+﻿using Core;
 using FortiOS.Types;
 using FortiOS.Client;
 using System.Text.Json;
