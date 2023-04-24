@@ -71,6 +71,7 @@ namespace module
             Console.WriteLine("\t module help");
             Console.WriteLine("\t module list");
             Console.WriteLine("\t module mngt");
+            Console.WriteLine("\t module repo");
             Console.WriteLine("");
         }
     }

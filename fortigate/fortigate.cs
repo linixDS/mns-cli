@@ -23,6 +23,7 @@ namespace fortigate
             Console.WriteLine("\t fortigate dhcp");
             Console.WriteLine("\t fortigate devices");
             Console.WriteLine("\t fortigate vpn");
+            Console.WriteLine("\t fortigate profile");
             Console.WriteLine("");
         }
     }
@@ -116,7 +117,7 @@ namespace fortigate
                 Console.Write("TOKEN> ");
                 config.Token = Console.ReadLine();
                 if (config.Token.Length > 0)
-                    config.Token = LibTerminal.Crypto.Encrypt(config.Token, "hoff01HOFF02");
+                    config.Token = Core.Crypto.Encrypt(config.Token, "hoff01HOFF02");
 
 
 
@@ -145,7 +146,7 @@ namespace fortigate
                 string json = File.ReadAllText(fileName);
                 var config = JsonSerializer.Deserialize<CONFIGCLASS>(json);
                 if (config.Token.Length > 1)
-                    config.Token = LibTerminal.Crypto.Decrypt(config.Token, "hoff01HOFF02");
+                    config.Token = Core.Crypto.Decrypt(config.Token, "hoff01HOFF02");
 
                 return config;
             }

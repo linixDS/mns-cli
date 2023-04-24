@@ -1,5 +1,11 @@
-LibTerminal/bin/
-LibTerminal/obj/
+core/bin/
+core/obj/
+
+runtime/bin/
+runtime/obj/
+
+module/bin/
+module/obj/
 
 mns-cli/bin/
 mns-cli/obj/
