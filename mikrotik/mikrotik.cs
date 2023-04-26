@@ -18,7 +18,7 @@ namespace module
             Console.WriteLine("\t MikroTik Managment ");
             Console.WriteLine("");
             Console.WriteLine("SHORT DESCRIPTION");
-            Console.WriteLine("\");
+            Console.WriteLine("\t");
             Console.WriteLine("");
             Console.WriteLine("SYNTEX");
             Console.WriteLine("\t mikrotik help");
