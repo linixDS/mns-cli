@@ -1,0 +1,7 @@
+{
+        "name": "mikrotik",
+        "version":"1.0.0.0",
+        "author":"Dariusz Marcisz",
+        "licence":"GPL",
+        "description":"Managment MikroTik devices"
+}
