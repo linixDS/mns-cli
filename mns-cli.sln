@@ -15,9 +15,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "fortigate", "fortigate\fort
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "runtime", "runtime\runtime.csproj", "{885BEB4A-BA49-4CF6-B637-3EA17AA69258}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "runtime", "module\module.csproj", "{885BEB4A-BA49-4CF6-B637-3EA17AA69259}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "module", "module\module.csproj", "{885BEB4A-BA49-4CF6-B637-3EA17AA69259}"
 EndProject
-
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mikrotik", "mikrotik\mikrotik.csproj", "{885BEB4A-BA49-4CF6-B637-3EA17AA69260}"
+EndProject
 
 
 Global
@@ -50,7 +51,14 @@ Global
 		{885BEB4A-BA49-4CF6-B637-3EA17AA69258}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{885BEB4A-BA49-4CF6-B637-3EA17AA69258}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{885BEB4A-BA49-4CF6-B637-3EA17AA69258}.Release|Any CPU.Build.0 = Release|Any CPU
-
+		{885BEB4A-BA49-4CF6-B637-3EA17AA69259}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{885BEB4A-BA49-4CF6-B637-3EA17AA69259}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{885BEB4A-BA49-4CF6-B637-3EA17AA69259}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{885BEB4A-BA49-4CF6-B637-3EA17AA69259}.Release|Any CPU.Build.0 = Release|Any CPU
+		{885BEB4A-BA49-4CF6-B637-3EA17AA69260}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{885BEB4A-BA49-4CF6-B637-3EA17AA69260}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{885BEB4A-BA49-4CF6-B637-3EA17AA69260}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{885BEB4A-BA49-4CF6-B637-3EA17AA69260}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
