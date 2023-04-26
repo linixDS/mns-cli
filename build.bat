@@ -13,7 +13,7 @@ if "%1" == "install" (
      if not exist ".\build\modules\network" mkdir .\build\modules\network
 
      copy .\network\bin\Debug\net7.0\network.dll .\.\build\modules\network\
-     copy .\network\bin\Debug\net7.0\pacgae.dll .\.\build\modules\network\
+     copy .\network\bin\Debug\net7.0\package.dll .\.\build\modules\network\
      copy .\network\bin\Debug\net7.0\core.dll .\.\build\modules\network\
 
      copy .\mns-cli\bin\Debug\net7.0\mns-cli.dll .\.\build\
@@ -21,14 +21,23 @@ if "%1" == "install" (
      copy .\core\bin\Debug\net7.0\core.dll .\.\build\
      copy .\runtime\bin\Debug\net7.0\runtime.dll .\.\build\
 
+     copy .\mns-cli\bin\Debug\net7.0\mns-cli.runtimeconfig.json .\.\build\
+
     exit 0
 )
 
 if "%1" == "compile" (
     echo "----------------------------------------------"
-    echo "::Compiling library LibTerminal.dll"
+    echo "::Compiling library core.dll"
     echo "----------------------------------------------"
     cd .\core\
+    dotnet build
+    cd ..
+
+    echo "----------------------------------------------"
+    echo "::Compiling library runtime.dll"
+    echo "----------------------------------------------"
+    cd .\runtime\
     dotnet build
     cd ..
 
@@ -47,11 +56,19 @@ if "%1" == "compile" (
     cd ..
 
     echo "----------------------------------------------"
-    echo "Compiling module fortigate.dll"
+    echo "::Compiling module fortigate.dll"
     echo "----------------------------------------------"
     cd .\fortigate\
     dotnet build
     cd ..
+
+    echo "----------------------------------------------"
+    echo "::Compiling module module.dll"
+    echo "----------------------------------------------"
+    cd .\module\
+    dotnet build
+    cd ..
+
     exit 0
 )
 

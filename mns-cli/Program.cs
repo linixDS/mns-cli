@@ -7,6 +7,9 @@ namespace nms_cli
     {
         public static void Main(string[] args)
         {
+            var path = System.Reflection.Assembly.GetAssembly(typeof(NetCli)).Location;
+            var workDir = Path.GetDirectoryName(path);
+            Directory.SetCurrentDirectory(workDir);
             var parser = new ParserCommandLine(args);
         }
     }
