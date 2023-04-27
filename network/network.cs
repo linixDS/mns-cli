@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Net.NetworkInformation;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace network
@@ -146,7 +147,18 @@ namespace network
             strCmdText = value; ;
 
             Terminal.WriteText("::Send ping to host " + value, ConsoleColor.Green, Console.BackgroundColor);
-            Terminal.ExecuteProcess("ping.exe", strCmdText);
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                Terminal.ExecuteProcess("ping.exe", strCmdText);
+            }
+            else
+                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                Terminal.ExecuteProcess("ping", strCmdText);
+            }
+            else
+                Terminal.ErrorWrite("Command not supported!");
         }
 
         public void tracert(string value)
@@ -161,7 +173,18 @@ namespace network
             strCmdText =  value;
 
             Terminal.WriteText("::Tracert to host " + value, ConsoleColor.Green, Console.BackgroundColor);
-            Terminal.ExecuteProcess("tracert.exe", strCmdText);
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                Terminal.ExecuteProcess("tracert.exe", strCmdText);
+            }
+            else
+                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                Terminal.ExecuteProcess("traceroute", strCmdText);
+            }
+            else
+                Terminal.ErrorWrite("Command not supported!");
         }
 
         public  void sping(string value)
@@ -231,10 +254,15 @@ namespace network
             Console.WriteLine("SHORT DESCRIPTION");
             Console.WriteLine("");
             Console.WriteLine("SYNTEX");
-            Console.WriteLine("\t network interface help");
-            Console.WriteLine("\t network interface show");
-            Console.WriteLine("\t network interface enable <input: name>");
-            Console.WriteLine("\t network interface disable <input: name>");
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                Console.WriteLine("\t network interface help");
+                Console.WriteLine("\t network interface show");
+                Console.WriteLine("\t network interface enable <input: name>");
+                Console.WriteLine("\t network interface disable <input: name>");
+            }
+
             Console.WriteLine("");
         }
 
@@ -281,10 +309,15 @@ namespace network
             Console.WriteLine("SHORT DESCRIPTION");
             Console.WriteLine("");
             Console.WriteLine("SYNTEX");
-            Console.WriteLine("\t network wlan help");
-            Console.WriteLine("\t network wlan show");
-            Console.WriteLine("\t network wlan connect <input1:profileName> <input2:interfaceName>");
-            Console.WriteLine("\t network wlan disconnect <input:interfaceName>");
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                Console.WriteLine("\t network wlan help");
+                Console.WriteLine("\t network wlan show");
+                Console.WriteLine("\t network wlan connect <input1:profileName> <input2:interfaceName>");
+                Console.WriteLine("\t network wlan disconnect <input:interfaceName>");
+            }
+
             Console.WriteLine("");
         }
 

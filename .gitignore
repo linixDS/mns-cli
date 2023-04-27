@@ -1,5 +1,8 @@
 .vs/
 
+remote/bin/
+remote/obj/
+
 mikrotik/bin/
 mikrotik/obj/
 
