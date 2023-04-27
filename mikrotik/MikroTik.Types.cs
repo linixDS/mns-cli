@@ -1,4 +1,5 @@
-using Newtonsoft.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System;
 
 namespace MikroTik.Types
@@ -28,13 +29,13 @@ namespace MikroTik.Types
 
     public class mtErrorMessage
     {
-        [JsonProperty("error")]
+        [JsonPropertyName("error")]
         public int ErrorCode {get; set;}
 
-        [JsonProperty("message")]
+        [JsonPropertyName("message")]
         public string Message {get; set;}
 
-        [JsonProperty("detail")]
+        [JsonPropertyName("detail")]
         public string Detail { get; set; }
 
         public mtErrorMessage()
@@ -53,23 +54,23 @@ namespace MikroTik.Types
 
     public class mtNewScheduler
     {
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string Name { get; set; }
 
-        [JsonProperty("disabled")]
+        [JsonPropertyName("disabled")]
         public string Disabled { get; set; }
 
-        [JsonProperty("interval")]
+        [JsonPropertyName("interval")]
         public string Intervaal { get; set; }
 
-        [JsonProperty("on-event")]
+        [JsonPropertyName("on-event")]
         public string OnEvent { get; set; }
 
 
-        [JsonProperty("start-date")]
+        [JsonPropertyName("start-date")]
         public string StartDate { get; set; }
 
-        [JsonProperty("start-time")]
+        [JsonPropertyName("start-time")]
         public string StartTime { get; set; }
 
 
@@ -87,42 +88,42 @@ namespace MikroTik.Types
 
     public class mtSchedulerInfo
     {
-        [JsonProperty(".id")]
+        [JsonPropertyName(".id")]
         public string Id { get; set; }
         
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string Name { get; set; }
         
-        [JsonProperty("disabled")]
+        [JsonPropertyName("disabled")]
         public bool  Disabled { get; set; }
         
-        [JsonProperty("interval")]
+        [JsonPropertyName("interval")]
         public string Intervaal { get; set; }
         
-        [JsonProperty("next-run")]
+        [JsonPropertyName("next-run")]
         public string NextRun { get; set; }
         
-        [JsonProperty("on-event")]
+        [JsonPropertyName("on-event")]
         public string OnEvent { get; set; }
        
-        [JsonProperty("owner")]
+        [JsonPropertyName("owner")]
         public string Owner { get; set; }
 
-        [JsonProperty("policy")]
+        [JsonPropertyName("policy")]
         public string Policy { get; set; }
 
-        [JsonProperty("run-count")]
+        [JsonPropertyName("run-count")]
         public string RunCount { get; set; }
 
 
-        [JsonProperty("start-date")]
+        [JsonPropertyName("start-date")]
         public string StartDate { get; set; }
 
-        [JsonProperty("start-time")]
+        [JsonPropertyName("start-time")]
         public string StartTime { get; set; }
 
 
-        [JsonProperty("comment")]
+        [JsonPropertyName("comment")]
         public string Comment { get; set; }
 
         public mtSchedulerInfo()
@@ -145,29 +146,29 @@ namespace MikroTik.Types
 
     public class mtScriptInfo
     {
-        [JsonProperty(".id")]
+        [JsonPropertyName(".id")]
         public string Id { get; set; }
-        [JsonProperty(".nextid")]
+        [JsonPropertyName(".nextid")]
         public string NextID { get; set; }
 
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string Name { get; set; }
-        [JsonProperty("dont-require-permissions")]
+        [JsonPropertyName("dont-require-permissions")]
         public string DontRequirePermissions { get; set; }
 
-        [JsonProperty("last-started")]
+        [JsonPropertyName("last-started")]
         public string LastStartedTime { get; set; }
 
-        [JsonProperty("owner")]
+        [JsonPropertyName("owner")]
         public string Owner { get; set; }
-        [JsonProperty("Policy")]
+        [JsonPropertyName("Policy")]
         public string Policy { get; set; }
-        [JsonProperty("run-count")]
+        [JsonPropertyName("run-count")]
         public string RunCount { get; set; }
-        [JsonProperty("source")]
+        [JsonPropertyName("source")]
         public string Source { get; set; }
 
-        [JsonProperty("comment")]
+        [JsonPropertyName("comment")]
         public string Comment { get; set; }
 
         public mtScriptInfo()
@@ -188,7 +189,7 @@ namespace MikroTik.Types
     public class mtRequestDataId
     {
         
-        [JsonProperty(".id")]
+        [JsonPropertyName(".id")]
         public string Id {get; set;}
         public mtRequestDataId(String _id)
         {
@@ -198,22 +199,22 @@ namespace MikroTik.Types
 
     public class mtPackageInfo
     {
-        [JsonProperty(".id")]
+        [JsonPropertyName(".id")]
         public string Id {get; set;}
 
-        [JsonProperty("build-time")]
+        [JsonPropertyName("build-time")]
         public string buildTime {get; set;}
 
-        [JsonProperty("disabled")]
+        [JsonPropertyName("disabled")]
         public string Disabled {get; set;}
 
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string Name {get; set;}
 
-        [JsonProperty("scheduled")]
+        [JsonPropertyName("scheduled")]
         public string Scheduled {get; set;}
 
-        [JsonProperty("version")]
+        [JsonPropertyName("version")]
         public string Version {get; set;}
 
         public  mtPackageInfo()
@@ -230,36 +231,36 @@ namespace MikroTik.Types
 
     public class mtCAPsMANConfigurationInfo
     {
-        [JsonProperty(".id")]
+        [JsonPropertyName(".id")]
         public string Id { get; set; }
 
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string Name { get; set; }
-        [JsonProperty("ssid")]
+        [JsonPropertyName("ssid")]
         public string SSID { get; set; }
 
-        [JsonProperty("channel")]
+        [JsonPropertyName("channel")]
         public string Channel { get; set; }
-        [JsonProperty("channel.tx-power")]
+        [JsonPropertyName("channel.tx-power")]
         public string TxPower { get; set; }
 
-        [JsonProperty("comment")]
+        [JsonPropertyName("comment")]
         public string Comment { get; set; }
 
-        [JsonProperty("country")]
+        [JsonPropertyName("country")]
         public string Country { get; set; }
-        [JsonProperty("installation")]
+        [JsonPropertyName("installation")]
         public string Installation { get; set; }
-        [JsonProperty("multicast-helper")]
+        [JsonPropertyName("multicast-helper")]
         public string MulticastHelper { get; set; }
-        [JsonProperty("rx-chains")]
+        [JsonPropertyName("rx-chains")]
         public string RxChains { get; set; }
-        [JsonProperty("tx-chains")]
+        [JsonPropertyName("tx-chains")]
         public string TxChains { get; set; }
-        [JsonProperty("security")]
+        [JsonPropertyName("security")]
         public string Security { get; set; }
 
-        [JsonProperty("datapath")]
+        [JsonPropertyName("datapath")]
         public string DataPath { get; set; }
         public mtCAPsMANConfigurationInfo()
         {
@@ -285,27 +286,27 @@ namespace MikroTik.Types
 
     public class mtCAPsMANRegistrationTableInfo
     {
-        [JsonProperty(".id")]
+        [JsonPropertyName(".id")]
         public string Id { get; set; }
-        [JsonProperty("comment")]
+        [JsonPropertyName("comment")]
         public string Comment {get; set;}
-        [JsonProperty("interface")]
+        [JsonPropertyName("interface")]
         public string Interface {get; set;}        
-        [JsonProperty("mac-address")]
+        [JsonPropertyName("mac-address")]
         public string MAC {get; set;} 
-        [JsonProperty("ssid")]
+        [JsonPropertyName("ssid")]
         public string SSID {get; set;}                 
-        [JsonProperty("rx-rate")]
+        [JsonPropertyName("rx-rate")]
         public string RxRate {get; set;}          
-        [JsonProperty("rx-signal")]
+        [JsonPropertyName("rx-signal")]
         public string RxSignal {get; set;}
-        [JsonProperty("tx-rate")]
+        [JsonPropertyName("tx-rate")]
         public string TxRate {get; set;}   
-        [JsonProperty("uptime")]
+        [JsonPropertyName("uptime")]
         public string Uptime {get; set;}                        
-        [JsonProperty("packets")]
+        [JsonPropertyName("packets")]
         public string Packets {get; set;}      
-        [JsonProperty("bytes")]
+        [JsonPropertyName("bytes")]
         public string Bytes {get; set;}               
 
         public mtCAPsMANRegistrationTableInfo()
@@ -371,26 +372,26 @@ namespace MikroTik.Types
 
     public class mtCAPsMANRemoteCAPInfo
     {
-        [JsonProperty(".id")]
+        [JsonPropertyName(".id")]
         public string Id {get; set;}
 
-       [JsonProperty("address")]
+       [JsonPropertyName("address")]
         public string Address {get; set;}
-       [JsonProperty("base-mac")]
+       [JsonPropertyName("base-mac")]
         public string MAC {get; set;}        
-       [JsonProperty("board")]
+       [JsonPropertyName("board")]
         public string Board {get; set;} 
-       [JsonProperty("identity")]
+       [JsonPropertyName("identity")]
         public string Identity {get; set;}               
-       [JsonProperty("name")]
+       [JsonPropertyName("name")]
         public string Name {get; set;}        
-       [JsonProperty("radios")]
+       [JsonPropertyName("radios")]
         public string Radios {get; set;}        
-       [JsonProperty("serial")]
+       [JsonPropertyName("serial")]
         public string Serial {get; set;}        
-       [JsonProperty("state")]
+       [JsonPropertyName("state")]
         public string State {get; set;} 
-       [JsonProperty("version")]
+       [JsonPropertyName("version")]
         public string Version {get; set;}  
 
         public mtCAPsMANRemoteCAPInfo()
@@ -411,46 +412,46 @@ namespace MikroTik.Types
 
     public class mtCAPsMANInterfaceInfo
     {
-        [JsonProperty("comment")]
+        [JsonPropertyName("comment")]
         public string Comment {get; set;}
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string Name {get; set;}
 
-        [JsonProperty("channel-frequency")]
+        [JsonPropertyName("channel-frequency")]
         public string ChannelFrequency {get; set;}
-        [JsonProperty("configuration")]
+        [JsonPropertyName("configuration")]
         public string Configuration {get; set;}
-        [JsonProperty("current-autorized-clients")]
+        [JsonPropertyName("current-autorized-clients")]
         public string CurrentAuthClients {get; set;}
-        [JsonProperty("current-channel")]
+        [JsonPropertyName("current-channel")]
         public string CurrentChannel {get; set;}
-        [JsonProperty("current-rate-set")]
+        [JsonPropertyName("current-rate-set")]
         public string CurrentRateSet {get; set;}
-        [JsonProperty("current-registered-clients")]
+        [JsonPropertyName("current-registered-clients")]
         public string CurrentRegisteredClients {get; set;}
-        [JsonProperty("current-state")]
+        [JsonPropertyName("current-state")]
         public string CurrentState {get; set;}
-        [JsonProperty("disabled")]
+        [JsonPropertyName("disabled")]
         public string Disabled {get; set;}
-        [JsonProperty("inactive")]
+        [JsonPropertyName("inactive")]
         public string Inactive {get; set;}
-        [JsonProperty("l2mtu")]
+        [JsonPropertyName("l2mtu")]
         public string L2MTU {get; set;}
-        [JsonProperty("mac-address")]
+        [JsonPropertyName("mac-address")]
         public string MAC {get; set;}
-        [JsonProperty("master")]
+        [JsonPropertyName("master")]
         public string Master {get; set;}
-        [JsonProperty("master-interface")]
+        [JsonPropertyName("master-interface")]
         public string MasterInterface {get; set;}
-        [JsonProperty("datapath")]
+        [JsonPropertyName("datapath")]
         public string DataPath {get; set;}
 
-        [JsonProperty("security")]
+        [JsonPropertyName("security")]
         public string Security {get; set;}
 
-        [JsonProperty("radio-name")]
+        [JsonPropertyName("radio-name")]
         public string RadioName {get; set;}
-        [JsonProperty("radio-mac")]
+        [JsonPropertyName("radio-mac")]
         public string RadioMAC {get; set;}
 
 
@@ -481,19 +482,19 @@ namespace MikroTik.Types
 
     public class mtInterfaceInfo
     {
-        [JsonProperty("comment")]
+        [JsonPropertyName("comment")]
         public string Comment {get; set;}
-        [JsonProperty("mac-address")]
+        [JsonPropertyName("mac-address")]
         public string MAC {get; set;}
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string Name {get; set;}
-        [JsonProperty("disabled")]
+        [JsonPropertyName("disabled")]
         public string Disabled {get; set;}
-        [JsonProperty("type")]
+        [JsonPropertyName("type")]
         public string Type {get; set;}
-        [JsonProperty("mtu")]
+        [JsonPropertyName("mtu")]
         public string MTU {get; set;}  
-        [JsonProperty("link-downs")]
+        [JsonPropertyName("link-downs")]
         public string LinkDown {get; set;}  
 
         public mtInterfaceInfo()
@@ -511,21 +512,21 @@ namespace MikroTik.Types
     public class mtEthernetInfo
     {
   
-        [JsonProperty("default-name")]
+        [JsonPropertyName("default-name")]
         public string DefaultName {get; set;}
-        [JsonProperty("mac-address")]
+        [JsonPropertyName("mac-address")]
         public string MAC {get; set;}
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string Name {get; set;}
-        [JsonProperty("disabled")]
+        [JsonPropertyName("disabled")]
         public string Disabled {get; set;}
-        [JsonProperty("mtu")]
+        [JsonPropertyName("mtu")]
         public string MTU {get; set;}  
-        [JsonProperty("comment")]
+        [JsonPropertyName("comment")]
         public string Comment {get; set;}  
-        [JsonProperty("full-duplex")]
+        [JsonPropertyName("full-duplex")]
         public string FullDuplex {get; set;}                  
-        [JsonProperty("speed")]
+        [JsonPropertyName("speed")]
         public string Speed {get; set;}   
 
         public mtEthernetInfo()
@@ -544,40 +545,40 @@ namespace MikroTik.Types
 
     public class mtNeighborInfo
     {
-        [JsonProperty("address")]
+        [JsonPropertyName("address")]
         public string AddressIP {get; set;}
-      [JsonProperty("address4")]
+      [JsonPropertyName("address4")]
         public string AddressIPv4 {get; set;}
 
-        [JsonProperty("age")] 
+        [JsonPropertyName("age")] 
         public string Age {get; set;}
-        [JsonProperty("board")] 
+        [JsonPropertyName("board")] 
         public string Board {get; set;}
-        [JsonProperty("identity")] 
+        [JsonPropertyName("identity")] 
         public string Identity {get; set;}    
-        [JsonProperty("interface")]    
+        [JsonPropertyName("interface")]    
         public string Interface {get; set;}
-        [JsonProperty("interface-name")]    
+        [JsonPropertyName("interface-name")]    
         public string InterfaceName {get; set;}        
-        [JsonProperty("mac-addresss")]    
+        [JsonPropertyName("mac-addresss")]    
         public string MAC {get; set;}  
-        [JsonProperty("platform")] 
+        [JsonPropertyName("platform")] 
         public string Platform {get; set;}          
-        [JsonProperty("software-id")]    
+        [JsonPropertyName("software-id")]    
         public string SoftwareID {get; set;}  
-        [JsonProperty("system-caps")]    
+        [JsonPropertyName("system-caps")]    
         public string SystemCAPS {get; set;}
 
-        [JsonProperty("system-caps-enabled")]    
+        [JsonPropertyName("system-caps-enabled")]    
         public string SystemCAPSEnabled {get; set;}            
 
-        [JsonProperty("system-description")]    
+        [JsonPropertyName("system-description")]    
         public string SystemDescription {get; set;} 
-        [JsonProperty("unpack")]    
+        [JsonPropertyName("unpack")]    
         public string Unpack {get; set;}           
-        [JsonProperty("uptime")]    
+        [JsonPropertyName("uptime")]    
         public string Uptime {get; set;}   
-        [JsonProperty("version")]    
+        [JsonPropertyName("version")]    
         public string Version {get; set;}  
 
         public mtNeighborInfo()
@@ -603,22 +604,22 @@ namespace MikroTik.Types
 
     public class mtUserManagerInfo
     {
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string MACAddress {get; set;}
         
-        [JsonProperty("disabled")]        
+        [JsonPropertyName("disabled")]        
         public string Disabled {get; set;}
-        [JsonProperty("password")] 
+        [JsonPropertyName("password")] 
         public string Password {get; set;}  
         
-        [JsonProperty("group")] 
+        [JsonPropertyName("group")] 
         public string Group {get; set;}
-        [JsonProperty("otp-secret")] 
+        [JsonPropertyName("otp-secret")] 
         public string OTPSecret {get; set;}
   
-        [JsonProperty("shared-users")]    
+        [JsonPropertyName("shared-users")]    
         public string SharedUsers {get; set;}
-        [JsonProperty("attributes")]    
+        [JsonPropertyName("attributes")]    
         public string Attributes {get; set;}        
  
 
@@ -638,20 +639,20 @@ namespace MikroTik.Types
     {
 
 
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string UserName { get; set; }
 
-        [JsonProperty("password")]
+        [JsonPropertyName("password")]
         public string Password { get; set; }
 
-        [JsonProperty("group")]
+        [JsonPropertyName("group")]
         public string Group { get; set; }
-        [JsonProperty("attributes")]
+        [JsonPropertyName("attributes")]
         public string Attributes { get; set; }
-        [JsonProperty("comment")]
+        [JsonPropertyName("comment")]
         public string Comment { get; set; }
 
-        [JsonProperty("disabled")]
+        [JsonPropertyName("disabled")]
         public string Disabled { get; set; }
 
 

@@ -3,12 +3,13 @@ using System.IO;
 using System.Net;
 using System.Diagnostics;
 using System.Text;
-using Newtonsoft.Json;
-
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using MikroTik.Types;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+
 
 namespace MikroTik.Client
 {
@@ -95,7 +96,7 @@ namespace MikroTik.Client
 
                 if (data != null)
                 {
-                    var payload = JsonConvert.SerializeObject(data);
+                    var payload = JsonSerializer.Serialize(data);
                     Debug.WriteLine("DATA:"+ payload.ToString());
                     content = new StringContent(payload, Encoding.UTF8, "application/json");
                 }
@@ -137,7 +138,7 @@ namespace MikroTik.Client
 
                 if (data != null)
                 {
-                    var payload = JsonConvert.SerializeObject(data);
+                    var payload = JsonSerializer.Serialize(data);
                     Debug.WriteLine("DATA:" + payload.ToString());
                     content = new StringContent(payload, Encoding.UTF8, "application/json");
                 }
@@ -179,7 +180,7 @@ namespace MikroTik.Client
 
                 if (data != null)
                 {
-                    var payload = JsonConvert.SerializeObject(data);
+                    var payload = JsonSerializer.Serialize(data);
                     Debug.WriteLine("DATA:" + payload.ToString());
                     content = new StringContent(payload, Encoding.UTF8, "application/json");
                 }
@@ -258,7 +259,7 @@ namespace MikroTik.Client
 
                 if (responde.statusCode == 200)
                 {
-                    var data = JsonConvert.DeserializeObject<List<mtUserManagerInfo>>(responde.data.ToString());
+                    var data = JsonSerializer.Deserialize<List<mtUserManagerInfo>>(responde.data.ToString());
                     if (OnEventResponde != null && callEvents)
                     {
                         OnEventResponde(responde.statusCode, data);
@@ -272,7 +273,7 @@ namespace MikroTik.Client
                     return (true, data);
                 }
 
-                var error = JsonConvert.DeserializeObject<mtErrorMessage>(responde.data.ToString());
+                var error = JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
                 LastError = error.GetDetailMessage();
  
                 if (OnEventResponde != null && callEvents )
@@ -338,7 +339,7 @@ namespace MikroTik.Client
 
                 if (responde.statusCode == 200)
                 {
-                    var data = JsonConvert.DeserializeObject<List<mtNeighborInfo>>(responde.data.ToString());
+                    var data = JsonSerializer.Deserialize<List<mtNeighborInfo>>(responde.data.ToString());
                     if (OnEventResponde != null && callEvents)
                     {
                         OnEventResponde(responde.statusCode, data);
@@ -352,7 +353,7 @@ namespace MikroTik.Client
                     return (true, data);
                 }
 
-                var error =  JsonConvert.DeserializeObject<mtErrorMessage>(responde.data.ToString());
+                var error =  JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
                 LastError = error.GetDetailMessage();
 
                 if (OnEventResponde != null && callEvents)
@@ -418,7 +419,7 @@ namespace MikroTik.Client
 
                 if (responde.statusCode == 200)
                 {
-                    var data = JsonConvert.DeserializeObject<List<mtInterfaceInfo>>(responde.data.ToString());
+                    var data = JsonSerializer.Deserialize<List<mtInterfaceInfo>>(responde.data.ToString());
                     if (OnEventResponde != null && callEvents)
                     {
                         OnEventResponde(responde.statusCode, data);
@@ -432,7 +433,7 @@ namespace MikroTik.Client
                     return (true, data);
                 }
 
-                var error =  JsonConvert.DeserializeObject<mtErrorMessage>(responde.data.ToString());
+                var error =  JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
                 LastError = error.GetDetailMessage();
 
                 if (OnEventResponde != null && callEvents)
@@ -499,7 +500,7 @@ namespace MikroTik.Client
 
                 if (responde.statusCode == 200)
                 {
-                    var data = JsonConvert.DeserializeObject<List<mtEthernetInfo>>(responde.data.ToString());
+                    var data = JsonSerializer.Deserialize<List<mtEthernetInfo>>(responde.data.ToString());
                     if (OnEventResponde != null && callEvents)
                     {
                         OnEventResponde(responde.statusCode, data);
@@ -513,7 +514,7 @@ namespace MikroTik.Client
                     return (true, data);
                 }
 
-                var error =  JsonConvert.DeserializeObject<mtErrorMessage>(responde.data.ToString());
+                var error =  JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
                 LastError = error.GetDetailMessage();
 
                 if (OnEventResponde != null && callEvents)
@@ -595,7 +596,7 @@ namespace MikroTik.Client
                     return (true, null);
                 }
 
-                var error =  JsonConvert.DeserializeObject<mtErrorMessage>(responde.data.ToString());
+                var error =  JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
                 LastError = error.GetDetailMessage();
 
                 if (OnEventResponde != null && callEvents)
@@ -660,7 +661,7 @@ namespace MikroTik.Client
 
                 if (responde.statusCode == 200)
                 {
-                    var data = JsonConvert.DeserializeObject<List<mtPackageInfo>>(responde.data.ToString());
+                    var data = JsonSerializer.Deserialize<List<mtPackageInfo>>(responde.data.ToString());
                     if (OnEventResponde != null && callEvents)
                     {
                         OnEventResponde(responde.statusCode, data);
@@ -674,7 +675,7 @@ namespace MikroTik.Client
                     return (true, data);
                 }
 
-                var error =  JsonConvert.DeserializeObject<mtErrorMessage>(responde.data.ToString());
+                var error =  JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
                 LastError = error.GetDetailMessage();
 
 
@@ -740,7 +741,7 @@ namespace MikroTik.Client
 
                 if (responde.statusCode == 200)
                 {
-                    var data = JsonConvert.DeserializeObject<List<mtCAPsMANConfigurationInfo>>(responde.data.ToString());
+                    var data = JsonSerializer.Deserialize<List<mtCAPsMANConfigurationInfo>>(responde.data.ToString());
 
                     if (OnEventResponde != null && callEvents)
                     {
@@ -755,7 +756,7 @@ namespace MikroTik.Client
                     return (true, data);
                 }
 
-                var error = JsonConvert.DeserializeObject<mtErrorMessage>(responde.data.ToString());
+                var error = JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
                 LastError = error.Message;
 
                 if (OnEventResponde != null && callEvents)
@@ -823,7 +824,7 @@ namespace MikroTik.Client
 
                 if (responde.statusCode == 200)
                 {
-                    var data = JsonConvert.DeserializeObject<List<mtScriptInfo>>(responde.data.ToString());
+                    var data = JsonSerializer.Deserialize<List<mtScriptInfo>>(responde.data.ToString());
                     if (OnEventResponde != null && callEvents)
                     {
                         OnEventResponde(responde.statusCode, data);
@@ -836,7 +837,7 @@ namespace MikroTik.Client
                     return (true, data);
                 }
 
-                var error = JsonConvert.DeserializeObject<mtErrorMessage>(responde.data.ToString());
+                var error = JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
                 LastError = error.GetDetailMessage();
 
                 if (OnEventResponde != null && callEvents)
@@ -918,7 +919,7 @@ namespace MikroTik.Client
                     return (true, null);
                 }
 
-                var error = JsonConvert.DeserializeObject<mtErrorMessage>(responde.data.ToString());
+                var error = JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
                 LastError = error.GetDetailMessage();
 
                 if (OnEventResponde != null && callEvents)
@@ -983,7 +984,7 @@ namespace MikroTik.Client
 
                 if (responde.statusCode == 200)
                 {
-                    var data = JsonConvert.DeserializeObject<List<mtCAPsMANInterfaceInfo>>(responde.data.ToString());
+                    var data = JsonSerializer.Deserialize<List<mtCAPsMANInterfaceInfo>>(responde.data.ToString());
                     if (OnEventResponde != null && callEvents)
                     {
                         OnEventResponde(responde.statusCode, data);
@@ -997,7 +998,7 @@ namespace MikroTik.Client
                     return (true, data);
                 }
 
-                var error =  JsonConvert.DeserializeObject<mtErrorMessage>(responde.data.ToString());
+                var error =  JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
                 LastError = error.GetDetailMessage();
 
                 if (OnEventResponde != null && callEvents)
@@ -1061,7 +1062,7 @@ namespace MikroTik.Client
 
                 if (responde.statusCode == 200)
                 {
-                    var data = JsonConvert.DeserializeObject<List<mtCAPsMANRemoteCAPInfo>>(responde.data.ToString());
+                    var data = JsonSerializer.Deserialize<List<mtCAPsMANRemoteCAPInfo>>(responde.data.ToString());
                     if (OnEventResponde != null && callEvents)
                     {
                         OnEventResponde(responde.statusCode, data);
@@ -1075,7 +1076,7 @@ namespace MikroTik.Client
                     return (true, data);
                 }
 
-                var error =  JsonConvert.DeserializeObject<mtErrorMessage>(responde.data.ToString());
+                var error =  JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
                 LastError = error.GetDetailMessage();
 
                 if (OnEventResponde != null && callEvents)
@@ -1140,7 +1141,7 @@ namespace MikroTik.Client
 
                 if (responde.statusCode == 200)
                 {
-                    var data = JsonConvert.DeserializeObject<List<mtCAPsMANRegistrationTableInfo>>(responde.data.ToString());
+                    var data = JsonSerializer.Deserialize<List<mtCAPsMANRegistrationTableInfo>>(responde.data.ToString());
                     if (OnEventResponde != null && callEvents)
                     {
                         OnEventResponde(responde.statusCode, data);
@@ -1154,7 +1155,7 @@ namespace MikroTik.Client
                     return (true, data);
                 }
 
-                var error =  JsonConvert.DeserializeObject<mtErrorMessage>(responde.data.ToString());
+                var error =  JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
                 LastError = error.GetDetailMessage();
 
                 if (OnEventResponde != null && callEvents)
@@ -1219,7 +1220,7 @@ namespace MikroTik.Client
 
                 if (responde.statusCode == 201)
                 {
-                    var data = JsonConvert.DeserializeObject<mtUserManagerInfo>(responde.data.ToString());
+                    var data = JsonSerializer.Deserialize<mtUserManagerInfo>(responde.data.ToString());
                     if (OnEventResponde != null && callEvents)
                     {
                         OnEventResponde(responde.statusCode, data);
@@ -1233,7 +1234,7 @@ namespace MikroTik.Client
                     return (true, data);
                 }
 
-                var error = JsonConvert.DeserializeObject<mtErrorMessage>(responde.data.ToString());
+                var error = JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
                 LastError = error.GetDetailMessage();
 
                 if (OnEventResponde != null && callEvents)
@@ -1301,7 +1302,7 @@ namespace MikroTik.Client
 
                 if (responde.statusCode == 201)
                 {
-                    var data = JsonConvert.DeserializeObject<mtUserManagerInfo>(responde.data.ToString());
+                    var data = JsonSerializer.Deserialize<mtUserManagerInfo>(responde.data.ToString());
                     if (OnEventResponde != null && callEvents)
                     {
                         OnEventResponde(responde.statusCode, data);
@@ -1315,7 +1316,7 @@ namespace MikroTik.Client
                     return (true, data);
                 }
 
-                var error = JsonConvert.DeserializeObject<mtErrorMessage>(responde.data.ToString());
+                var error = JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
                 LastError = error.GetDetailMessage();
 
                 if (OnEventResponde != null && callEvents)
@@ -1395,7 +1396,7 @@ namespace MikroTik.Client
                     return (true, null);
                 }
 
-                var error = JsonConvert.DeserializeObject<mtErrorMessage>(responde.data.ToString());
+                var error = JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
                 LastError = error.GetDetailMessage();
 
                 if (OnEventResponde != null && callEvents)
@@ -1473,7 +1474,7 @@ namespace MikroTik.Client
                     return (true, null);
                 }
 
-                var error = JsonConvert.DeserializeObject<mtErrorMessage>(responde.data.ToString());
+                var error = JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
                 LastError = error.GetDetailMessage();
 
                 if (OnEventResponde != null && callEvents)
@@ -1552,7 +1553,7 @@ namespace MikroTik.Client
                     return (true, null);
                 }
 
-                var error = JsonConvert.DeserializeObject<mtErrorMessage>(responde.data.ToString());
+                var error = JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
                 LastError = error.GetDetailMessage();
 
                 if (OnEventResponde != null && callEvents)
@@ -1620,7 +1621,7 @@ namespace MikroTik.Client
 
                 if (responde.statusCode == 200)
                 {
-                    var data = JsonConvert.DeserializeObject<List<mtSchedulerInfo>>(responde.data.ToString());
+                    var data = JsonSerializer.Deserialize<List<mtSchedulerInfo>>(responde.data.ToString());
 
                     if (OnEventResponde != null && callEvents)
                     {
@@ -1635,7 +1636,7 @@ namespace MikroTik.Client
                     return (true, data);
                 }
 
-                var error = JsonConvert.DeserializeObject<mtErrorMessage>(responde.data.ToString());
+                var error = JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
                 LastError = error.Message;
 
                 if (OnEventResponde != null && callEvents )
@@ -1705,7 +1706,7 @@ namespace MikroTik.Client
 
                 if (responde.statusCode == 201)
                 {
-                    var data = JsonConvert.DeserializeObject<mtSchedulerInfo>(responde.data.ToString());
+                    var data = JsonSerializer.Deserialize<mtSchedulerInfo>(responde.data.ToString());
                     if (OnEventResponde != null && callEvents)
                     {
                         OnEventResponde(responde.statusCode, data);
@@ -1721,7 +1722,7 @@ namespace MikroTik.Client
 
 
                 Debug.WriteLine("ERROR ");
-                var error = JsonConvert.DeserializeObject<mtErrorMessage>(responde.data.ToString());
+                var error = JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
                 LastError = error.GetDetailMessage();
 
 
@@ -1837,7 +1838,7 @@ namespace MikroTik.Client
                     return (true, null);
                 }
 
-                var error = JsonConvert.DeserializeObject<mtErrorMessage>(responde.data.ToString());
+                var error = JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
                 LastError = error.GetDetailMessage();
 
 

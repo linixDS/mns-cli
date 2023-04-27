@@ -7,7 +7,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Core;
 
-namespace module
+namespace mikrotik
 {
     public class HELPCLASS
     {
@@ -25,10 +25,6 @@ namespace module
             Console.WriteLine("");
         }
     }
-
-
-
-
 
 
 }
