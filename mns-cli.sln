@@ -17,8 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "runtime", "runtime\runtime.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "module", "module\module.csproj", "{885BEB4A-BA49-4CF6-B637-3EA17AA69259}"
 EndProject
-
-
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "remote", "remote\remote.csproj", "{885BEB4A-BA49-4CF6-B637-3EA17AA69260}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +53,10 @@ Global
 		{885BEB4A-BA49-4CF6-B637-3EA17AA69259}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{885BEB4A-BA49-4CF6-B637-3EA17AA69259}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{885BEB4A-BA49-4CF6-B637-3EA17AA69259}.Release|Any CPU.Build.0 = Release|Any CPU
+		{885BEB4A-BA49-4CF6-B637-3EA17AA69260}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{885BEB4A-BA49-4CF6-B637-3EA17AA69260}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{885BEB4A-BA49-4CF6-B637-3EA17AA69260}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{885BEB4A-BA49-4CF6-B637-3EA17AA69260}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
