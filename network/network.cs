@@ -97,7 +97,6 @@ namespace network
             Console.WriteLine("");
             Console.WriteLine("SYNTEX");
             Console.WriteLine("\t network tool ping <input: address>");
-            Console.WriteLine("\t network tool sping <input: address>");
             Console.WriteLine("\t network tool tracert <input: address>");
             Console.WriteLine("");
         }
@@ -153,58 +152,6 @@ namespace network
             Console.WriteLine();
         }
 
-        public  void sping(string value)
-        {
-            if (value == null)
-            {
-                Terminal.ErrorWrite("Error: Incorrect value!");
-                return;
-            }
-
-            Ping pingSender = new Ping();
-            string data = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-            byte[] buffer = Encoding.ASCII.GetBytes(data);
-
-            int timeout = 5000;
-
-            // Set options for transmission:
-            // The data can go through 64 gateways or routers
-            // before it is destroyed, and the data packet
-            // cannot be fragmented.
-            PingOptions options = new PingOptions(64, true);
-
-            // Send the request.
-
-
-            Terminal.WriteText("::Send ping to host " + value, ConsoleColor.Green, Console.BackgroundColor);
-            PingReply reply = pingSender.Send(value, timeout, buffer, options);
-
-            if (reply.Status == IPStatus.Success)
-            {
-                Console.WriteLine();
-                Console.Write("Addres        : ");
-                Terminal.WriteText(reply.Address.ToString(), ConsoleColor.Yellow, Console.BackgroundColor);
-
-                Console.Write("RoundTrip time: ");
-                Terminal.WriteText(reply.RoundtripTime.ToString(), ConsoleColor.Yellow, Console.BackgroundColor);
-
-                Console.Write("Time to live  : ");
-                Terminal.WriteText(reply.Options.Ttl.ToString(), ConsoleColor.Yellow, Console.BackgroundColor);
-
-                Console.Write("Don't fragment: ");
-                Terminal.WriteText(reply.Options.DontFragment.ToString(), ConsoleColor.Yellow, Console.BackgroundColor);
-
-                Console.Write("Buffer size   : ");
-                Terminal.WriteText(reply.Buffer.Length.ToString(), ConsoleColor.Yellow, Console.BackgroundColor);
-
-                Console.WriteLine();
-            }
-            else
-            {
-                Terminal.ErrorWrite(reply.Status.ToString());
-            }
-                        Console.WriteLine();
-        }
     }
 
 
