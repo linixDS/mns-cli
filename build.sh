@@ -15,7 +15,7 @@ if [ "$1" == "install" ] ; then
 
     cp ./fortigate/bin/Debug/net7.0/fortigate.dll ././build/modules/fortigate/
     cp ./fortigate/bin/Debug/net7.0/core.dll ././build/modules/fortigate/
-    cp ./fortigate/bin/Debug/net7.0/package.json ././build/modules/fortigate/
+    cp ./fortigate/package.json ././build/modules/fortigate/
 
     if [ ! -d "./build/modules/module" ]; then
          mkdir ./build/modules/module
@@ -23,7 +23,7 @@ if [ "$1" == "install" ] ; then
 
     cp ./module/bin/Debug/net7.0/module.dll ././build/modules/module/
     cp ./module/bin/Debug/net7.0/core.dll ././build/modules/module/
-    cp ./module/bin/Debug/net7.0/package.json ././build/modules/module/
+    cp ./module/package.json ././build/modules/module/
 
 
 
@@ -33,7 +33,7 @@ if [ "$1" == "install" ] ; then
 
     cp ./network/bin/Debug/net7.0/network.dll ././build/modules/network/
     cp ./network/bin/Debug/net7.0/core.dll ././build/modules/network/
-    cp ./network/bin/Debug/net7.0/package.json ././build/modules/network/
+    cp ./network/package.json ././build/modules/network/
 
 
     if [ ! -d "./build/modules/remote" ]; then
@@ -42,7 +42,9 @@ if [ "$1" == "install" ] ; then
 
     cp ./remote/bin/Debug/net7.0/remote.dll ././build/modules/remote/
     cp ./remote/bin/Debug/net7.0/core.dll ././build/modules/remote/
-    cp ./remote/bin/Debug/net7.0/package.json ././build/modules/remote/
+    cp ./remote/package.json ././build/modules/remote/
+    cp ./remote/vnc.sh ././build/modules/remote/
+    cp ./remote/rdp.sh ././build/modules/remote/
 
     cp ./mns-cli/bin/Debug/net7.0/mns-cli.dll ././build/
     cp ./mns-cli/bin/Debug/net7.0/mns-cli ././build/

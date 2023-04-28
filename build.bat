@@ -8,25 +8,26 @@ if "%1" == "install" (
 
      if not exist ".\build\modules\fortigate" mkdir .\build\modules\fortigate
      copy .\fortigate\bin\Debug\net7.0\fortigate.dll .\.\build\modules\fortigate\
-     copy .\fortigate\bin\Debug\net7.0\package.json .\.\build\modules\fortigate\
+     copy .\fortigate\package.json .\.\build\modules\fortigate\
      copy .\fortigate\bin\Debug\net7.0\core.dll .\.\build\modules\fortigate\
 
      if not exist ".\build\modules\network" mkdir .\build\modules\network
 
      copy .\network\bin\Debug\net7.0\network.dll .\.\build\modules\network\
-     copy .\network\bin\Debug\net7.0\package.json .\.\build\modules\network\
+     copy .\network\package.json .\.\build\modules\network\
      copy .\network\bin\Debug\net7.0\core.dll .\.\build\modules\network\
 
      if not exist ".\build\modules\module" mkdir .\build\modules\module
 
      copy .\module\bin\Debug\net7.0\network.dll .\.\build\modules\module\
-     copy .\module\bin\Debug\net7.0\package.json .\.\build\modules\module\
+     copy .\module\package.json .\.\build\modules\module\
      copy .\module\bin\Debug\net7.0\core.dll .\.\build\modules\module\
 
      if not exist ".\build\modules\remote" mkdir .\build\modules\remote
 
      copy .\remote\bin\Debug\net7.0\remote.dll .\.\build\modules\remote\
-     copy .\remote\bin\Debug\net7.0\package.json .\.\build\modules\remote\
+     copy .\remote\package.json .\.\build\modules\remote\
+     copy .\remote\vnc.exe .\.\build\modules\remote\
      copy .\remote\bin\Debug\net7.0\core.dll .\.\build\modules\remote\
 
      copy .\mns-cli\bin\Debug\net7.0\mns-cli.dll .\.\build\

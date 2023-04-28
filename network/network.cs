@@ -23,6 +23,7 @@ namespace network
             Console.WriteLine("\t network module");
             Console.WriteLine("\t network geoip");
             Console.WriteLine("\t network ip");
+            Console.WriteLine("\t network tool");
             Console.WriteLine("\t network interface");
             Console.WriteLine("\t network wlan");
             Console.WriteLine("");
@@ -84,56 +85,23 @@ namespace network
     }
 
 
-    public class IPCLASS
+   public class TOOLCLASS
     {
         public void help()
         {
             Console.Clear();
             Console.WriteLine("NAME");
-            Console.WriteLine("\t network ping ");
+            Console.WriteLine("\t network tools ");
             Console.WriteLine("");
             Console.WriteLine("SHORT DESCRIPTION");
             Console.WriteLine("");
             Console.WriteLine("SYNTEX");
-            Console.WriteLine("\t network ip ping <input: address>");
-            Console.WriteLine("\t network ip sping <input: address>");
-            Console.WriteLine("\t network ip tracert <input: address>");
-            Console.WriteLine("\t network ip show");
-            Console.WriteLine("\t network ip list");
+            Console.WriteLine("\t network tool ping <input: address>");
+            Console.WriteLine("\t network tool sping <input: address>");
+            Console.WriteLine("\t network tool tracert <input: address>");
             Console.WriteLine("");
         }
 
-        public void show()
-        {
-            String strHostName = string.Empty;
-            try
-            {
-                strHostName = Dns.GetHostName();
-                Terminal.WriteText("::Local Machine's Host Name: " + strHostName, ConsoleColor.Green, Console.BackgroundColor);
-
-                IPHostEntry ipEntry = Dns.GetHostEntry(strHostName);
-                IPAddress[] addr = ipEntry.AddressList;
-
-                for (int i = 0; i < addr.Length; i++)
-                {
-                    Console.Write("  IP Address: ");
-                    Terminal.WriteText(addr[i].ToString(), ConsoleColor.Yellow, Console.BackgroundColor);
-                }
-            }
-            catch (Exception error)
-            {
-                Terminal.ErrorWrite(error.Message);
-            }
-
-            Console.WriteLine();
-        }
-
-        public void list()
-        {
-            string strCmdText;
-            strCmdText = "/all ";
-            Terminal.ExecuteProcess("ipconfig.exe", strCmdText);
-        }
 
         public void ping(string value)
         {
@@ -179,12 +147,10 @@ namespace network
                 Terminal.ExecuteProcess("tracert.exe", strCmdText);
             }
             else
-                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
                 Terminal.ExecuteProcess("traceroute", strCmdText);
             }
-            else
-                Terminal.ErrorWrite("Command not supported!");
+            Console.WriteLine();
         }
 
         public  void sping(string value)
@@ -218,7 +184,7 @@ namespace network
                 Console.WriteLine();
                 Console.Write("Addres        : ");
                 Terminal.WriteText(reply.Address.ToString(), ConsoleColor.Yellow, Console.BackgroundColor);
-                
+
                 Console.Write("RoundTrip time: ");
                 Terminal.WriteText(reply.RoundtripTime.ToString(), ConsoleColor.Yellow, Console.BackgroundColor);
 
@@ -237,7 +203,65 @@ namespace network
             {
                 Terminal.ErrorWrite(reply.Status.ToString());
             }
+                        Console.WriteLine();
         }
+    }
+
+
+
+
+    public class IPCLASS
+    {
+        public void help()
+        {
+            Console.Clear();
+            Console.WriteLine("NAME");
+            Console.WriteLine("\t network ip ");
+            Console.WriteLine("");
+            Console.WriteLine("SHORT DESCRIPTION");
+            Console.WriteLine("");
+            Console.WriteLine("SYNTEX");
+            Console.WriteLine("\t network ip show");
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                        Console.WriteLine("\t network ip list");
+            }
+            Console.WriteLine("\t network ip list");
+            Console.WriteLine("");
+        }
+
+        public void show()
+        {
+            String strHostName = string.Empty;
+            try
+            {
+                strHostName = Dns.GetHostName();
+                Terminal.WriteText("::Local Machine's Host Name: " + strHostName, ConsoleColor.Green, Console.BackgroundColor);
+
+                IPHostEntry ipEntry = Dns.GetHostEntry(strHostName);
+                IPAddress[] addr = ipEntry.AddressList;
+
+                for (int i = 0; i < addr.Length; i++)
+                {
+                    Console.Write("  IP Address: ");
+                    Terminal.WriteText(addr[i].ToString(), ConsoleColor.Yellow, Console.BackgroundColor);
+                }
+            }
+            catch (Exception error)
+            {
+                Terminal.ErrorWrite(error.Message);
+            }
+
+            Console.WriteLine();
+        }
+
+        public void list()
+        {
+            string strCmdText;
+            strCmdText = "/all ";
+            Terminal.ExecuteProcess("ipconfig.exe", strCmdText);
+        }
+
     }
 
 
