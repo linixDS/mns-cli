@@ -35,6 +35,15 @@ if [ "$1" == "install" ] ; then
     cp ./network/bin/Debug/net7.0/core.dll ././build/modules/network/
     cp ./network/bin/Debug/net7.0/package.json ././build/modules/network/
 
+
+    if [ ! -d "./build/modules/remote" ]; then
+         mkdir ./build/modules/remote
+    fi
+
+    cp ./remote/bin/Debug/net7.0/remote.dll ././build/modules/remote/
+    cp ./remote/bin/Debug/net7.0/core.dll ././build/modules/remote/
+    cp ./remote/bin/Debug/net7.0/package.json ././build/modules/remote/
+
     cp ./mns-cli/bin/Debug/net7.0/mns-cli.dll ././build/
     cp ./mns-cli/bin/Debug/net7.0/mns-cli ././build/
     cp ./core/bin/Debug/net7.0/core.dll ././build/
@@ -78,6 +87,13 @@ if [ "$1" == "compile" ] ; then
     echo "Compiling module fortigate.dll"
     echo "----------------------------------------------"
     cd ./fortigate/
+    dotnet build
+    cd ..
+
+    echo "----------------------------------------------"
+    echo "Compiling module remote.dll"
+    echo "----------------------------------------------"
+    cd ./remote/
     dotnet build
     cd ..
 

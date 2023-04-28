@@ -23,6 +23,12 @@ if "%1" == "install" (
      copy .\module\bin\Debug\net7.0\package.json .\.\build\modules\module\
      copy .\module\bin\Debug\net7.0\core.dll .\.\build\modules\module\
 
+     if not exist ".\build\modules\remote" mkdir .\build\modules\remote
+
+     copy .\remote\bin\Debug\net7.0\remote.dll .\.\build\modules\remote\
+     copy .\remote\bin\Debug\net7.0\package.json .\.\build\modules\remote\
+     copy .\remote\bin\Debug\net7.0\core.dll .\.\build\modules\remote\
+
      copy .\mns-cli\bin\Debug\net7.0\mns-cli.dll .\.\build\
      copy .\mns-cli\bin\Debug\net7.0\mns-cli.exe .\.\build\
      copy .\mns-cli\bin\Debug\net7.0\core.dll .\.\build\
@@ -59,6 +65,13 @@ if "%1" == "compile" (
     echo "::Compiling module network.dll"
     echo "----------------------------------------------"
     cd .\network\
+    dotnet build
+    cd ..
+
+    echo "----------------------------------------------"
+    echo "::Compiling module remote.dll"
+    echo "----------------------------------------------"
+    cd .\remote\
     dotnet build
     cd ..
 
