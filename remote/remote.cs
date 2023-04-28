@@ -64,7 +64,7 @@ namespace remote
                 else
                 {
                     strCmdText = address;
-                    command = "vnc.sh";
+                    command = "./vnc.sh";
                 }
 
                 Terminal.ExecuteProcess(command, strCmdText);
@@ -158,7 +158,7 @@ namespace remote
                 else
                 {
                     strCmdText = address;
-                    command = "rdp.sh";
+                    command = "./rdp.sh";
                 }
 
                 Terminal.ExecuteProcess(command, strCmdText);
