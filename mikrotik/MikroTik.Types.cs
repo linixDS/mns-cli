@@ -4,6 +4,89 @@ using System;
 
 namespace MikroTik.Types
 {
+
+    public class mtRadiusRouter
+    {
+        [JsonPropertyName(".id")]
+        public string Id { get; set; }
+        [JsonPropertyName("disabled")]
+        public string Disabled { get; set; }
+
+        [JsonPropertyName("coa-port")]
+        public string COAPort { get; set; }
+        [JsonPropertyName("address")]
+        public string Address { get; set; }
+
+        [JsonPropertyName("name")]
+        public string Name { get; set; }
+        [JsonPropertyName("shared-secret")]
+        public string SharedSecret { get; set; }
+
+        public mtRadiusRouter()
+        {
+            Id = "";
+            Disabled = "false";
+            Name = "";
+            SharedSecret = "";
+            Address = "";
+            COAPort = "";
+        }
+    }
+
+    public class mtRadiusService
+    {
+        [JsonPropertyName(".id")]
+        public string Id { get; set; }
+        [JsonPropertyName("disabled")]
+        public string Disabled { get; set; }
+
+        [JsonPropertyName("service")]
+        public string ServiceName { get; set; }
+        [JsonPropertyName("secret")]
+        public string Secret { get; set; }
+        [JsonPropertyName("accounting-backup")]
+        public string AccountingBackup { get; set; }
+        [JsonPropertyName("accounting-port")]
+        public string AccountingPort { get; set; }
+        [JsonPropertyName("address")]
+        public string Address { get; set; }
+        [JsonPropertyName("authentication-port")]
+        public string AuthenticationPort { get; set; }
+        [JsonPropertyName("called-id")]
+        public string CalledID { get; set; }
+        [JsonPropertyName("certificate")]
+        public string Certificate { get; set; }
+        [JsonPropertyName("comment")]
+        public string Comment { get; set; }
+        [JsonPropertyName("domain")]
+        public string Domain { get; set; }
+        [JsonPropertyName("protocol")]
+        public string Protocol { get; set; }
+        [JsonPropertyName("realm")]
+        public string Realm { get; set; }
+        [JsonPropertyName("timeout")]
+        public string Timeout { get; set; }
+
+        public mtRadiusService()
+        {
+            Id = "";
+            Disabled = "false";
+            ServiceName = "";
+            Secret = "";
+            AccountingPort = "";
+            AccountingBackup = "";
+            Address = "";
+            AuthenticationPort = "";
+            CalledID = "";
+            Certificate = "";
+            Comment = "";
+            Domain = "";
+            Protocol = "";
+            Realm = "";
+            Timeout = "";
+        }
+    }
+
     public class mtCacheWiFi
     {
         public string InterfaceName { get; set; }
@@ -45,9 +128,22 @@ namespace MikroTik.Types
             Detail = String.Empty;
         }
 
+        public mtErrorMessage(int code, string message, string detail)
+        {
+            ErrorCode = code;
+            Message = message;
+            Detail = detail;
+        }
+
+
         public string GetDetailMessage()
         {
             return Message + ": " + Detail;
+        }
+
+        public string ToString()
+        {
+            return JsonSerializer.Serialize<mtErrorMessage>(this);
         }
 
     }
@@ -543,24 +639,73 @@ namespace MikroTik.Types
     }
 
 
+    public class mtDHCPServerLease
+    {
+
+        [JsonPropertyName(".id")]
+        public string Id { get; set; }
+        [JsonPropertyName("address")]
+        public string Address { get; set; }
+        [JsonPropertyName("mac-address")]
+        public string MAC { get; set; }
+        [JsonPropertyName("host-name")]
+        public string HostName { get; set; }
+
+        [JsonPropertyName("server")]
+        public string DHCPServer { get; set; }
+
+        [JsonPropertyName("disabled")]
+        public string Disabled { get; set; }
+        [JsonPropertyName("dynamic")]
+        public string DynamicAddress { get; set; }
+
+        [JsonPropertyName("status")]
+        public string Status { get; set; }
+
+        [JsonPropertyName("last-seen")]
+        public string LastSeen { get; set; }
+
+        [JsonPropertyName("expires-after")]
+        public string ExpiresAfter { get; set; }
+
+
+        public mtDHCPServerLease()
+        {
+            Id = "";
+            Address = "";
+            HostName = "";
+            Disabled = "";
+            DHCPServer = "";
+            MAC = "";
+            DynamicAddress = "";
+            Status = "";
+            LastSeen = "";
+            ExpiresAfter = "";
+        }
+    }
+
+
     public class mtNeighborInfo
     {
         [JsonPropertyName("address")]
         public string AddressIP {get; set;}
-      [JsonPropertyName("address4")]
+        [JsonPropertyName("address4")]
         public string AddressIPv4 {get; set;}
 
         [JsonPropertyName("age")] 
         public string Age {get; set;}
         [JsonPropertyName("board")] 
         public string Board {get; set;}
-        [JsonPropertyName("identity")] 
-        public string Identity {get; set;}    
+
+        [JsonPropertyName("identity")]
+        public string Identity { get; set; }
+
         [JsonPropertyName("interface")]    
         public string Interface {get; set;}
         [JsonPropertyName("interface-name")]    
-        public string InterfaceName {get; set;}        
-        [JsonPropertyName("mac-addresss")]    
+        public string InterfaceName {get; set;}    
+            
+        [JsonPropertyName("mac-address")]    
         public string MAC {get; set;}  
         [JsonPropertyName("platform")] 
         public string Platform {get; set;}          
@@ -604,8 +749,11 @@ namespace MikroTik.Types
 
     public class mtUserManagerInfo
     {
+        [JsonPropertyName(".id")]
+        public string Id { get; set; }
+
         [JsonPropertyName("name")]
-        public string MACAddress {get; set;}
+        public string Name {get; set;}
         
         [JsonPropertyName("disabled")]        
         public string Disabled {get; set;}
@@ -615,32 +763,64 @@ namespace MikroTik.Types
         [JsonPropertyName("group")] 
         public string Group {get; set;}
         [JsonPropertyName("otp-secret")] 
+
         public string OTPSecret {get; set;}
   
         [JsonPropertyName("shared-users")]    
         public string SharedUsers {get; set;}
         [JsonPropertyName("attributes")]    
-        public string Attributes {get; set;}        
- 
+        public string Attributes {get; set;}
+        [JsonPropertyName("comment")]
+        public string Comment { get; set; }
+
 
         public mtUserManagerInfo(){
-            MACAddress = "";
+            Name = "";
             Disabled = "";
             Password = "";
             Group = "";
             OTPSecret = "";
             SharedUsers = "";
             Attributes = "";
+            Comment = "";
+            Id = "";
         }         
+    }
+
+
+    public class mtUserManagerGroup
+    {
+
+        [JsonPropertyName(".id")]
+        public string Id { get; set; }
+
+        [JsonPropertyName("name")]
+        public string Name { get; set; }
+
+        [JsonPropertyName("attributes")]
+        public string Attributes { get; set; }
+
+        [JsonPropertyName("inner-auths")]
+        public string InnerAuths { get; set; }
+
+        [JsonPropertyName("outer-auths")]
+        public string OuterAuths { get; set; }
+
+        public mtUserManagerGroup()
+        {
+            Id = "";
+            Name = "";
+            Attributes = "";
+            InnerAuths = "";
+            OuterAuths = "";
+        }
     }
 
 
     public class mtRequestNewUserData
     {
-
-
         [JsonPropertyName("name")]
-        public string UserName { get; set; }
+        public string Name { get; set; }
 
         [JsonPropertyName("password")]
         public string Password { get; set; }
@@ -658,12 +838,22 @@ namespace MikroTik.Types
 
         public mtRequestNewUserData()
         {
-            UserName = "";
+            Name = "";
             Password = "";
             Group = "default";
             Attributes = "";
             Disabled = "false";
             Comment = "";
+        }
+
+        public mtRequestNewUserData(mtUserManagerInfo data)
+        {
+            Name = data.Name;
+            Password = data.Password;
+            Group = data.Group;
+            Attributes = data.Attributes;
+            Disabled = data.Disabled;
+            Comment = data.Comment;
         }
     }
 

@@ -46,6 +46,18 @@ if [ "$1" == "install" ] ; then
     cp ./remote/vnc.sh ././build/modules/remote/
     cp ./remote/rdp.sh ././build/modules/remote/
 
+
+    if [ ! -d "./build/modules/mikrotik" ]; then
+         mkdir ./build/modules/mikrotik
+    fi
+
+    cp ./mikrotik/bin/Debug/net7.0/remote.dll ././build/modules/mikrotik/
+    cp ./mikrotik/bin/Debug/net7.0/core.dll ././build/modules/mikrotik/
+    cp ./mikrotik/package.json ././build/modules/mikrotik/
+    cp ./mikrotik/winbox64.exe ././build/modules/mikrotik/
+
+
+
     cp ./mns-cli/bin/Debug/net7.0/mns-cli.dll ././build/
     cp ./mns-cli/bin/Debug/net7.0/mns-cli ././build/
     cp ./core/bin/Debug/net7.0/core.dll ././build/
@@ -66,6 +78,13 @@ if [ "$1" == "compile" ] ; then
 
     echo "----------------------------------------------"
     echo "::Compiling library runtime.dll"
+    echo "----------------------------------------------"
+    cd ./runtime/
+    dotnet build
+    cd ..
+
+    echo "----------------------------------------------"
+    echo "::Compiling library mikrotik.dll"
     echo "----------------------------------------------"
     cd ./runtime/
     dotnet build
