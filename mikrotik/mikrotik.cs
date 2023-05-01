@@ -32,6 +32,8 @@ namespace mikrotik
             Console.WriteLine("\t mikrotik usermanger");
             Console.WriteLine("\t mikrotik radius");
             Console.WriteLine("\t mikrotik caps");
+            Console.WriteLine("\t mikrotik script");
+            Console.WriteLine("\t mikrotik scheduler");
             Console.WriteLine("");
         }
     }

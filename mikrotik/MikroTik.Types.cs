@@ -87,28 +87,6 @@ namespace MikroTik.Types
         }
     }
 
-    public class mtCacheWiFi
-    {
-        public string InterfaceName { get; set; }
-        public string SSID { get; set; }
-
-        public object HandleCAP { get; set; }
-
-        public mtCacheWiFi(string name, string ssid)
-        {
-            InterfaceName = name;
-            SSID = ssid;
-            HandleCAP = null;
-        }
-
-        public mtCacheWiFi(string name, string ssid, object handle)
-        {
-            InterfaceName = name;
-            SSID = ssid;
-            HandleCAP = handle;
-        }
-
-    }
 
     public class mtErrorMessage
     {
@@ -253,11 +231,11 @@ namespace MikroTik.Types
         public string DontRequirePermissions { get; set; }
 
         [JsonPropertyName("last-started")]
-        public string LastStartedTime { get; set; }
+        public string LastStarted { get; set; }
 
         [JsonPropertyName("owner")]
         public string Owner { get; set; }
-        [JsonPropertyName("Policy")]
+        [JsonPropertyName("policy")]
         public string Policy { get; set; }
         [JsonPropertyName("run-count")]
         public string RunCount { get; set; }
@@ -273,7 +251,7 @@ namespace MikroTik.Types
             NextID  = String.Empty;
             Name= String.Empty;
             DontRequirePermissions= String.Empty;
-            LastStartedTime= String.Empty;
+            LastStarted= String.Empty;
             Owner= String.Empty;
             Policy= String.Empty;
             RunCount= String.Empty;
@@ -339,7 +317,6 @@ namespace MikroTik.Types
         public string Channel { get; set; }
         [JsonPropertyName("channel.tx-power")]
         public string TxPower { get; set; }
-
         [JsonPropertyName("comment")]
         public string Comment { get; set; }
 
@@ -517,7 +494,7 @@ namespace MikroTik.Types
         public string ChannelFrequency {get; set;}
         [JsonPropertyName("configuration")]
         public string Configuration {get; set;}
-        [JsonPropertyName("current-autorized-clients")]
+        [JsonPropertyName("current-authorized-clients")]
         public string CurrentAuthClients {get; set;}
         [JsonPropertyName("current-channel")]
         public string CurrentChannel {get; set;}
@@ -539,11 +516,7 @@ namespace MikroTik.Types
         public string Master {get; set;}
         [JsonPropertyName("master-interface")]
         public string MasterInterface {get; set;}
-        [JsonPropertyName("datapath")]
-        public string DataPath {get; set;}
 
-        [JsonPropertyName("security")]
-        public string Security {get; set;}
 
         [JsonPropertyName("radio-name")]
         public string RadioName {get; set;}
@@ -568,8 +541,6 @@ namespace MikroTik.Types
             MAC = "";
             Master = "";
             MasterInterface = "";
-            DataPath = "";
-            Security = "";
             RadioName = "";
             RadioMAC = "";
         }
