@@ -30,6 +30,14 @@ if "%1" == "install" (
      copy .\remote\vnc.exe .\.\build\modules\remote\
      copy .\remote\bin\Debug\net7.0\core.dll .\.\build\modules\remote\
 
+     if not exist ".\build\modules\mikrotik" mkdir .\build\modules\mikrotik
+
+     copy .\mikrotik\bin\Debug\net7.0\remote.dll .\.\build\modules\mikrotik\
+     copy .\mikrotik\package.json .\.\build\modules\mikrotik\
+     copy .\mikrotik\winbox64.exe .\.\build\modules\mikrotik\
+     copy .\mikrotik\bin\Debug\net7.0\core.dll .\.\build\modules\mikrotik\
+
+
      copy .\mns-cli\bin\Debug\net7.0\mns-cli.dll .\.\build\
      copy .\mns-cli\bin\Debug\net7.0\mns-cli.exe .\.\build\
      copy .\mns-cli\bin\Debug\net7.0\core.dll .\.\build\
@@ -52,6 +60,13 @@ if "%1" == "compile" (
     echo "::Compiling library runtime.dll"
     echo "----------------------------------------------"
     cd .\runtime\
+    dotnet build
+    cd ..
+
+    echo "----------------------------------------------"
+    echo "::Compiling library mikrotik.dll"
+    echo "----------------------------------------------"
+    cd .\mikrotik\
     dotnet build
     cd ..
 

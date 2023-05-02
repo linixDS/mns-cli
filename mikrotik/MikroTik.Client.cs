@@ -28,7 +28,7 @@ namespace MikroTik.Client
 
     public class MikroTikClientRestApi
     {
-        
+
         protected string MainRouterUrl;
         protected HttpClient client;
         protected string LastError;
@@ -55,20 +55,20 @@ namespace MikroTik.Client
 
         public MikroTikClientRestApi(string address, string user, string passw)
         {
-           LastError = ""; 
-           addressServer = address;
+            LastError = "";
+            addressServer = address;
 
-            OnEventFailed= null;
+            OnEventFailed = null;
             OnEventRequest = null;
-            OnEventResponde= null;
-            OnEventSuccess  = null;
-            OnEventError= null;
+            OnEventResponde = null;
+            OnEventSuccess = null;
+            OnEventError = null;
 
 
-           MainRouterUrl = String.Format("https://{0}/rest/",address);
+            MainRouterUrl = String.Format("https://{0}/rest/", address);
 
-           var byteArray = Encoding.ASCII.GetBytes(user+":"+passw);
-           
+            var byteArray = Encoding.ASCII.GetBytes(user + ":" + passw);
+
             var httpClientHandler = new HttpClientHandler();
             httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) =>
             {
@@ -88,37 +88,48 @@ namespace MikroTik.Client
         private async Task<MikroTikRespondeRequest> SendPost(string url, object data)
         {
             LastError = "";
-            HttpResponseMessage response; 
+            HttpResponseMessage response;
             StringContent content = null;
             try
             {
-                Debug.WriteLine("POST:"+ url);
+                Debug.WriteLine("POST:" + url);
 
                 if (data != null)
                 {
                     var payload = JsonSerializer.Serialize(data);
-                    Debug.WriteLine("DATA:"+ payload.ToString());
+                    Debug.WriteLine("DATA:" + payload.ToString());
                     content = new StringContent(payload, Encoding.UTF8, "application/json");
                 }
 
                 if (OnEventRequest != null && callEvents)
                     OnEventRequest(url, data);
-  
+
                 response = await client.PostAsync(url, content);
 
-                Debug.WriteLine(" -> RESPONDE CODE:"+ (int)response.StatusCode);
-                
-                var json = await response.Content.ReadAsStringAsync();
-                Debug.WriteLine(" -> RESPONDE DATA:"+ json);
+                Debug.WriteLine(" -> RESPONDE CODE:" + (int)response.StatusCode);
 
-  
+                var json = "";
+                if ((int)response.StatusCode == 200 || (int)response.StatusCode == 201)
+                {
+                    json = await response.Content.ReadAsStringAsync();
+                    json = json.Replace("\0", "");
+                    Debug.WriteLine(" -> RESPONDE DATA:" + json);
+                }
+                else
+                {
+                    var errorMessage = new mtErrorMessage((int)response.StatusCode, response.StatusCode.ToString(), "");
+                    json = errorMessage.ToString();
+                    LastError = "Error: Server responde code" + response.StatusCode.ToString();
+                }
+
+
+
                 MikroTikRespondeRequest responde = new MikroTikRespondeRequest((int)response.StatusCode, json);
                 return responde;
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exceprion: "+e.Message);
-                LastError = "Wyj¹tek:"+e.Message;
+                LastError = "Exception:" + e.Message;
                 if (OnEventError != null && callEvents)
                     OnEventError(LastError);
             }
@@ -134,12 +145,10 @@ namespace MikroTik.Client
             StringContent content = null;
             try
             {
-                Debug.WriteLine("PUT:" + url);
 
                 if (data != null)
                 {
                     var payload = JsonSerializer.Serialize(data);
-                    Debug.WriteLine("DATA:" + payload.ToString());
                     content = new StringContent(payload, Encoding.UTF8, "application/json");
                 }
 
@@ -148,10 +157,19 @@ namespace MikroTik.Client
 
                 response = await client.PutAsync(url, content);
 
-                Debug.WriteLine(" -> RESPONDE CODE:" + (int)response.StatusCode);
-
-                var json = await response.Content.ReadAsStringAsync();
-                Debug.WriteLine(" -> RESPONDE DATA:" + json);
+                var json = "";
+                if ((int)response.StatusCode == 200 || (int)response.StatusCode == 201)
+                {
+                    json = await response.Content.ReadAsStringAsync();
+                    json = json.Replace("\0", "");
+                    Debug.WriteLine(" -> RESPONDE DATA:" + json);
+                }
+                else
+                {
+                    var errorMessage = new mtErrorMessage((int)response.StatusCode, response.StatusCode.ToString(), "");
+                    json = errorMessage.ToString();
+                    LastError = "Error: Server responde code" + response.StatusCode.ToString();
+                }
 
 
                 MikroTikRespondeRequest responde = new MikroTikRespondeRequest((int)response.StatusCode, json);
@@ -159,8 +177,7 @@ namespace MikroTik.Client
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exceprion: " + e.Message);
-                LastError = "Wyj¹tek: "+e.Message;
+                LastError = "Exception: " + e.Message;
                 if (OnEventError != null && callEvents)
                     OnEventError(LastError);
             }
@@ -194,17 +211,27 @@ namespace MikroTik.Client
 
                 Debug.WriteLine(" -> RESPONDE CODE:" + (int)response.StatusCode);
 
-                var json = await response.Content.ReadAsStringAsync();
-                Debug.WriteLine(" -> RESPONDE DATA:" + json);
 
+                var json = "";
+                if ((int)response.StatusCode == 200 || (int)response.StatusCode == 201)
+                {
+                    json = await response.Content.ReadAsStringAsync();
+                    json = json.Replace("\0", "");
+                    Debug.WriteLine(" -> RESPONDE DATA:" + json);
+                }
+                else
+                {
+                    var errorMessage = new mtErrorMessage((int)response.StatusCode, response.StatusCode.ToString(), "");
+                    json = errorMessage.ToString();
+                    LastError = "Error: Server responde code" + response.StatusCode.ToString();
+                }
 
                 MikroTikRespondeRequest responde = new MikroTikRespondeRequest((int)response.StatusCode, json);
                 return responde;
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exceprion: " + e.Message);
-                LastError ="Wyj¹tek: "+e.Message;
+                LastError = "Exception: " + e.Message;
                 if (OnEventError != null && callEvents)
                     OnEventError(e.Message);
             }
@@ -215,27 +242,37 @@ namespace MikroTik.Client
         private async Task<MikroTikRespondeRequest> SendGet(string url)
         {
             LastError = "";
-            HttpResponseMessage response; 
+            HttpResponseMessage response;
 
             try
             {
-                Debug.WriteLine("GET "+url);
+                Debug.WriteLine("GET " + url);
                 if (OnEventRequest != null && callEvents)
                     OnEventRequest(url, null);
 
                 response = await client.GetAsync(url);
 
-                Debug.WriteLine(" -> RESPONDE CODE:"+ (int)response.StatusCode);
-                var json = await response.Content.ReadAsStringAsync();
-                Debug.WriteLine(" -> RESPONDE DATA:"+ json);
+
+                var json = "";
+                if ((int)response.StatusCode == 200)
+                {
+                    json = await response.Content.ReadAsStringAsync();
+                    json = json.Replace("\0", "");
+                    Debug.WriteLine(" -> RESPONDE DATA:" + json);
+                }
+                    else
+                {
+                    var errorMessage = new mtErrorMessage((int)response.StatusCode, response.StatusCode.ToString(), "");
+                    json = errorMessage.ToString();
+                    LastError = "Error: Server responde code" + response.StatusCode.ToString();
+                }
 
                 MikroTikRespondeRequest res = new MikroTikRespondeRequest((int)response.StatusCode, json);
                 return res;
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exceprion: "+e.Message);
-                LastError = "Wyj¹tek: "+e.Message;
+                LastError = "Exception: " + e.Message;
                 if (OnEventError != null && callEvents)
                     OnEventError(LastError);
             }
@@ -243,15 +280,97 @@ namespace MikroTik.Client
             return null;
         }
 
-  
-      /***************************************************************************************************
-           GET ALL USERS FROM MIKROTIK USER MANAGER
-        ****************************************************************************************************/ 
+
+
+
+        /***************************************************************************************************
+               GET USER FROM MIKROTIK USER MANAGER
+        ****************************************************************************************************/
+
+        public async Task<(bool, object)> GetUserFromUserManagerAsync(string id)
+        {
+            string Url = String.Format("{0}user-manager/user/{1}", MainRouterUrl, id);
+
+            try
+            {
+                MikroTikRespondeRequest responde = await SendGet(Url);
+                if (responde == null) return (false, null);
+
+                if (responde.statusCode == 200)
+                {
+                    var data = JsonSerializer.Deserialize<mtUserManagerInfo>(responde.data.ToString());
+                    if (OnEventResponde != null && callEvents)
+                    {
+                        OnEventResponde(responde.statusCode, data);
+                    }
+
+                    if (OnEventSuccess != null && callEvents)
+                    {
+                        OnEventSuccess(data);
+                    }
+
+                    return (true, data);
+                }
+
+                var error = JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
+                LastError = error.GetDetailMessage();
+
+                if (OnEventResponde != null && callEvents)
+                    OnEventResponde(responde.statusCode, error);
+
+                if (OnEventFailed != null && callEvents)
+                    OnEventFailed(error);
+
+                return (false, error);
+            }
+            catch (Exception e)
+            {
+                LastError = "Exception: " + e.Message;
+                if (OnEventError != null && callEvents)
+                    OnEventError(LastError);
+            }
+
+            return (false, null);
+        }
+
+        public mtUserManagerInfo GetUserFromUserManager(string id)
+        {
+            bool res = false;
+            object data;
+            try
+            {
+                callEvents = false;
+
+                var t = Task.Run(() =>
+                {
+                    return GetUserFromUserManagerAsync(id);
+                });
+                (res, data) = t.Result;
+
+                callEvents = true;
+                if (res)
+                    return (mtUserManagerInfo)data;
+            }
+            catch (Exception e)
+            {
+                callEvents = true;
+
+                LastError = "Exception:" + e.Message;
+            }
+
+            return (null);
+        }
+
+
+
+        /***************************************************************************************************
+             GET ALL USERS FROM MIKROTIK USER MANAGER
+          ****************************************************************************************************/
 
         public async Task<(bool, object)> GetUsersFromUserManagerAsync()
         {
-            string Url = String.Format("{0}user-manager/user",MainRouterUrl);
-   
+            string Url = String.Format("{0}user-manager/user", MainRouterUrl);
+
             try
             {
                 MikroTikRespondeRequest responde = await SendGet(Url);
@@ -275,24 +394,24 @@ namespace MikroTik.Client
 
                 var error = JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
                 LastError = error.GetDetailMessage();
- 
-                if (OnEventResponde != null && callEvents )
+
+                if (OnEventResponde != null && callEvents)
                     OnEventResponde(responde.statusCode, error);
 
                 if (OnEventFailed != null && callEvents)
                     OnEventFailed(error);
-  
+
                 return (false, error);
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exceprion: "+e.Message);
-                LastError ="Wyj¹tek: "+e.Message;
+
+                LastError = "Exception: " + e.Message;
                 if (OnEventError != null && callEvents)
                     OnEventError(LastError);
             }
 
-            return  (false, null);
+            return (false, null);
         }
 
         public List<mtUserManagerInfo> GetUsersFromUserManager()
@@ -316,22 +435,23 @@ namespace MikroTik.Client
             catch (Exception e)
             {
                 callEvents = true;
-                Console.WriteLine("Exceprion: " + e.Message);
-                LastError = "Wyj¹tek:"+e.Message;
+
+                LastError = "Exception:" + e.Message;
             }
 
             return (null);
         }
 
 
-        /***************************************************************************************************
-             GET Neighbors
-          ****************************************************************************************************/
 
-        public async Task<(bool, object)> GetNeighborsAsync()
+        /***************************************************************************************************
+                  GET ALL GROUPS FROM MIKROTIK USER MANAGER
+               ****************************************************************************************************/
+
+        public async Task<(bool, object)> GetGroupsFromUserManagerAsync()
         {
-            string Url = String.Format("{0}ip/neighbor",MainRouterUrl);
-   
+            string Url = String.Format("{0}user-manager/user/group", MainRouterUrl);
+
             try
             {
                 MikroTikRespondeRequest responde = await SendGet(Url);
@@ -339,7 +459,7 @@ namespace MikroTik.Client
 
                 if (responde.statusCode == 200)
                 {
-                    var data = JsonSerializer.Deserialize<List<mtNeighborInfo>>(responde.data.ToString());
+                    var data = JsonSerializer.Deserialize<List<mtUserManagerGroup>>(responde.data.ToString());
                     if (OnEventResponde != null && callEvents)
                     {
                         OnEventResponde(responde.statusCode, data);
@@ -353,7 +473,7 @@ namespace MikroTik.Client
                     return (true, data);
                 }
 
-                var error =  JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
+                var error = JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
                 LastError = error.GetDetailMessage();
 
                 if (OnEventResponde != null && callEvents)
@@ -361,17 +481,177 @@ namespace MikroTik.Client
 
                 if (OnEventFailed != null && callEvents)
                     OnEventFailed(error);
-  
+
                 return (false, error);
-            }catch (Exception e)
+            }
+            catch (Exception e)
             {
-                Console.WriteLine("Exceprion: "+e.Message);
-                LastError = "Wyj¹tek: "+e.Message;
+                LastError = "Exception: " + e.Message;
                 if (OnEventError != null && callEvents)
                     OnEventError(LastError);
             }
 
-            return  (false, null);
+            return (false, null);
+        }
+
+        public List<mtUserManagerGroup> GetGroupsFromUserManager()
+        {
+            bool res = false;
+            object data;
+            try
+            {
+                callEvents = false;
+
+                var t = Task.Run(() =>
+                {
+                    return GetGroupsFromUserManagerAsync();
+                });
+                (res, data) = t.Result;
+
+                callEvents = true;
+                if (res)
+                    return (List<mtUserManagerGroup>)data;
+            }
+            catch (Exception e)
+            {
+                callEvents = true;
+                LastError = "Exception:" + e.Message;
+            }
+
+            return (null);
+        }
+
+
+        /***************************************************************************************************
+                  GET  GROUP FROM MIKROTIK USER MANAGER
+               ****************************************************************************************************/
+
+        public async Task<(bool, object)> GetGroupFromUserManagerAsync(string id)
+        {
+            string Url = String.Format("{0}user-manager/user/group/{1}", MainRouterUrl,id);
+
+            try
+            {
+                MikroTikRespondeRequest responde = await SendGet(Url);
+                if (responde == null) return (false, null);
+
+                if (responde.statusCode == 200)
+                {
+                    var data = JsonSerializer.Deserialize<mtUserManagerGroup>(responde.data.ToString());
+                    if (OnEventResponde != null && callEvents)
+                    {
+                        OnEventResponde(responde.statusCode, data);
+                    }
+
+                    if (OnEventSuccess != null && callEvents)
+                    {
+                        OnEventSuccess(data);
+                    }
+
+                    return (true, data);
+                }
+
+                var error = JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
+                LastError = error.GetDetailMessage();
+
+                if (OnEventResponde != null && callEvents)
+                    OnEventResponde(responde.statusCode, error);
+
+                if (OnEventFailed != null && callEvents)
+                    OnEventFailed(error);
+
+                return (false, error);
+            }
+            catch (Exception e)
+            {
+
+                LastError = "Exception: " + e.Message;
+                if (OnEventError != null && callEvents)
+                    OnEventError(LastError);
+            }
+
+            return (false, null);
+        }
+
+        public mtUserManagerGroup GetGroupFromUserManager(string id)
+        {
+            bool res = false;
+            object data;
+            try
+            {
+                callEvents = false;
+
+                var t = Task.Run(() =>
+                {
+                    return GetGroupFromUserManagerAsync(id);
+                });
+                (res, data) = t.Result;
+
+                callEvents = true;
+                if (res)
+                    return (mtUserManagerGroup)data;
+            }
+            catch (Exception e)
+            {
+                callEvents = true;
+
+                LastError = "Exception:" + e.Message;
+            }
+
+            return (null);
+        }
+
+
+        /***************************************************************************************************
+             GET Neighbors
+          ****************************************************************************************************/
+
+        public async Task<(bool, object)> GetNeighborsAsync()
+        {
+            string Url = String.Format("{0}ip/neighbor", MainRouterUrl);
+
+            try
+            {
+                MikroTikRespondeRequest responde = await SendGet(Url);
+                if (responde == null) return (false, null);
+
+                if (responde.statusCode == 200)
+                {
+
+                    var data = JsonSerializer.Deserialize<List<mtNeighborInfo>>(responde.data);
+                    if (OnEventResponde != null && callEvents)
+                    {
+                        OnEventResponde(responde.statusCode, data);
+                    }
+
+                    if (OnEventSuccess != null && callEvents)
+                    {
+                        OnEventSuccess(data);
+                    }
+
+                    return (true, data);
+                }
+
+                var error = JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
+                LastError = error.GetDetailMessage();
+
+                if (OnEventResponde != null && callEvents)
+                    OnEventResponde(responde.statusCode, error);
+
+                if (OnEventFailed != null && callEvents)
+                    OnEventFailed(error);
+
+                return (false, error);
+            }
+            catch (Exception e)
+            {
+
+                LastError = "Exception: " + e.Message;
+                if (OnEventError != null && callEvents)
+                    OnEventError(LastError);
+            }
+
+            return (false, null);
         }
 
         public List<mtNeighborInfo> GetNeighbors()
@@ -395,23 +675,108 @@ namespace MikroTik.Client
             catch (Exception e)
             {
                 callEvents = true;
-                Console.WriteLine("Exceprion: " + e.Message);
-                LastError = "Wyj¹tek:"+e.Message;
+
+                LastError = "Exception:" + e.Message;
             }
 
             return (null);
 
-        }      
+        }
 
 
-      /***************************************************************************************************
-           GET Interfaces
-        ****************************************************************************************************/ 
+
+        /***************************************************************************************************
+                 GET DHCP Server lease
+        ****************************************************************************************************/
+
+        public async Task<(bool, object)> GetDhcpServerLeaseAsync()
+        {
+            string Url = String.Format("{0}ip/dhcp-server/lease", MainRouterUrl);
+
+            try
+            {
+                MikroTikRespondeRequest responde = await SendGet(Url);
+                if (responde == null) return (false, null);
+
+                if (responde.statusCode == 200)
+                {
+
+                    var data = JsonSerializer.Deserialize<List<mtDHCPServerLease>>(responde.data);
+                    if (OnEventResponde != null && callEvents)
+                    {
+                        OnEventResponde(responde.statusCode, data);
+                    }
+
+                    if (OnEventSuccess != null && callEvents)
+                    {
+                        OnEventSuccess(data);
+                    }
+
+                    return (true, data);
+                }
+
+                var error = JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
+                LastError = error.GetDetailMessage();
+
+                if (OnEventResponde != null && callEvents)
+                    OnEventResponde(responde.statusCode, error);
+
+                if (OnEventFailed != null && callEvents)
+                    OnEventFailed(error);
+
+                return (false, error);
+            }
+            catch (Exception e)
+            {
+
+                LastError = "Exception: " + e.Message;
+                if (OnEventError != null && callEvents)
+                    OnEventError(LastError);
+            }
+
+            return (false, null);
+        }
+
+        public List<mtDHCPServerLease> GetDhcpServerLease()
+        {
+            bool res = false;
+            object data;
+            try
+            {
+                callEvents = false;
+                var t = Task.Run(() =>
+                {
+                    return GetDhcpServerLeaseAsync();
+                });
+                (res, data) = t.Result;
+
+                callEvents = true;
+
+                if (res)
+                    return (List<mtDHCPServerLease>)data;
+            }
+            catch (Exception e)
+            {
+                callEvents = true;
+
+                LastError = "Exception:" + e.Message;
+            }
+
+            return (null);
+
+        }
+
+
+
+
+        /***************************************************************************************************
+             GET Interfaces
+          ****************************************************************************************************/
 
         public async Task<(bool, object)> GetInterfacesAsync()
         {
-            string Url = String.Format("{0}interface",MainRouterUrl);
-   
+            string Url = String.Format("{0}interface", MainRouterUrl);
+
             try
             {
                 MikroTikRespondeRequest responde = await SendGet(Url);
@@ -433,7 +798,7 @@ namespace MikroTik.Client
                     return (true, data);
                 }
 
-                var error =  JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
+                var error = JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
                 LastError = error.GetDetailMessage();
 
                 if (OnEventResponde != null && callEvents)
@@ -441,17 +806,18 @@ namespace MikroTik.Client
 
                 if (OnEventFailed != null && callEvents)
                     OnEventFailed(error);
-  
+
                 return (false, error);
-            }catch (Exception e)
+            }
+            catch (Exception e)
             {
-                Console.WriteLine("Exceprion: "+e.Message);
-                LastError = "Wyj¹tek: "+e.Message;
+
+                LastError = "Exception: " + e.Message;
                 if (OnEventError != null && callEvents)
                     OnEventError(LastError);
             }
 
-            return  (false, null);
+            return (false, null);
         }
 
         public List<mtInterfaceInfo> GetInterfaces()
@@ -475,8 +841,8 @@ namespace MikroTik.Client
             catch (Exception e)
             {
                 callEvents = true;
-                Console.WriteLine("Exceprion: " + e.Message);
-                LastError = "Wyj¹tek: "+e.Message;
+
+                LastError = "Exception: " + e.Message;
             }
 
             return (null);
@@ -491,8 +857,8 @@ namespace MikroTik.Client
 
         public async Task<(bool, object)> GetEthernetsAsync()
         {
-            string Url = String.Format("{0}interface/ethernet",MainRouterUrl);
-   
+            string Url = String.Format("{0}interface/ethernet", MainRouterUrl);
+
             try
             {
                 MikroTikRespondeRequest responde = await SendGet(Url);
@@ -514,7 +880,7 @@ namespace MikroTik.Client
                     return (true, data);
                 }
 
-                var error =  JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
+                var error = JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
                 LastError = error.GetDetailMessage();
 
                 if (OnEventResponde != null && callEvents)
@@ -522,17 +888,18 @@ namespace MikroTik.Client
 
                 if (OnEventFailed != null && callEvents)
                     OnEventFailed(error);
-  
+
                 return (false, error);
-            }catch (Exception e)
+            }
+            catch (Exception e)
             {
-                Console.WriteLine("Exceprion: "+e.Message);
-                LastError = "Wyj¹tek: "+e.Message;
+
+                LastError = "Exception: " + e.Message;
                 if (OnEventError != null && callEvents)
                     OnEventError(LastError);
             }
 
-            return  (false, null);
+            return (false, null);
         }
 
         public List<mtEthernetInfo> GetEthernets()
@@ -556,8 +923,8 @@ namespace MikroTik.Client
             catch (Exception e)
             {
                 callEvents = true;
-                Console.WriteLine("Exceprion: " + e.Message);
-                LastError = "Wyj¹tek: "+e.Message;
+
+                LastError = "Exception: " + e.Message;
             }
 
             return (null);
@@ -566,14 +933,14 @@ namespace MikroTik.Client
 
 
 
-    /***************************************************************************************************
-          COMMAD POST: UPGRADE CAP
-      ****************************************************************************************************/
+        /***************************************************************************************************
+              COMMAD POST: UPGRADE CAP
+          ****************************************************************************************************/
 
-    public async Task<(bool, object)> ExecuteUpgradeCAPAsync(string id)
+        public async Task<(bool, object)> ExecuteUpgradeCAPAsync(string id)
         {
-            string Url = String.Format("{0}caps-man/remote-cap/upgrade",MainRouterUrl);
-   
+            string Url = String.Format("{0}caps-man/remote-cap/upgrade", MainRouterUrl);
+
             try
             {
                 mtRequestDataId data = new mtRequestDataId(id);
@@ -588,7 +955,7 @@ namespace MikroTik.Client
                         OnEventResponde(responde.statusCode, null);
                     }
 
-                    if (OnEventSuccess != null && callEvents )
+                    if (OnEventSuccess != null && callEvents)
                     {
                         OnEventSuccess(null);
                     }
@@ -596,7 +963,7 @@ namespace MikroTik.Client
                     return (true, null);
                 }
 
-                var error =  JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
+                var error = JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
                 LastError = error.GetDetailMessage();
 
                 if (OnEventResponde != null && callEvents)
@@ -604,17 +971,18 @@ namespace MikroTik.Client
 
                 if (OnEventFailed != null && callEvents)
                     OnEventFailed(error);
-  
+
                 return (false, error);
-            }catch (Exception e)
+            }
+            catch (Exception e)
             {
-                Console.WriteLine("Exceprion: "+e.Message);
-                LastError = "Wyj¹tek"+e.Message;
+
+                LastError = "Exception: " + e.Message;
                 if (OnEventError != null && callEvents)
                     OnEventError(e.Message);
             }
 
-            return  (false, null);
+            return (false, null);
         }
 
         public bool ExecuteUpgradeCAP(string id)
@@ -638,8 +1006,8 @@ namespace MikroTik.Client
             catch (Exception e)
             {
                 callEvents = true;
-                Console.WriteLine("Exceprion: " + e.Message);
-                LastError = "Wyj¹tek:" + e.Message;
+
+                LastError = "Exception:" + e.Message;
             }
 
             return false;
@@ -652,8 +1020,8 @@ namespace MikroTik.Client
 
         public async Task<(bool, object)> GetPackageAsync()
         {
-            string Url = String.Format("{0}system/package",MainRouterUrl);
-   
+            string Url = String.Format("{0}system/package", MainRouterUrl);
+
             try
             {
                 MikroTikRespondeRequest responde = await SendGet(Url);
@@ -675,7 +1043,7 @@ namespace MikroTik.Client
                     return (true, data);
                 }
 
-                var error =  JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
+                var error = JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
                 LastError = error.GetDetailMessage();
 
 
@@ -686,15 +1054,16 @@ namespace MikroTik.Client
                     OnEventFailed(error);
 
                 return (false, error);
-            }catch (Exception e)
+            }
+            catch (Exception e)
             {
-                Console.WriteLine("Exceprion: "+e.Message);
-                LastError = "Wyj¹tek:" + e.Message;
+
+                LastError = "Exception:" + e.Message;
                 if (OnEventError != null && callEvents)
                     OnEventError(LastError);
             }
 
-            return  (false, null);
+            return (false, null);
         }
 
         public List<mtPackageInfo> GetPackage()
@@ -719,8 +1088,8 @@ namespace MikroTik.Client
             catch (Exception e)
             {
                 callEvents = true;
-                Console.WriteLine("Exceprion: " + e.Message);
-                LastError = "Wyj¹tek:" + e.Message;
+
+                LastError = "Exception:" + e.Message;
             }
 
             return (null);
@@ -769,8 +1138,8 @@ namespace MikroTik.Client
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exceprion: " + e.Message);
-                LastError = "Wyj¹tek:" + e.Message;
+
+                LastError = "Exception:" + e.Message;
                 if (OnEventError != null && callEvents)
                     OnEventError(LastError);
             }
@@ -800,8 +1169,8 @@ namespace MikroTik.Client
             catch (Exception e)
             {
                 callEvents = true;
-                Console.WriteLine("Exceprion: " + e.Message);
-                LastError = "Wyj¹tek:" + e.Message;
+
+                LastError = "Exception:" + e.Message;
             }
 
             return (null);
@@ -851,8 +1220,8 @@ namespace MikroTik.Client
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exceprion: " + e.Message);
-                LastError = "Wyj¹tek:" + e.Message;
+
+                LastError = "Exception:" + e.Message;
                 if (OnEventError != null && callEvents)
                     OnEventError(LastError);
             }
@@ -880,8 +1249,8 @@ namespace MikroTik.Client
             catch (Exception e)
             {
                 callEvents = true;
-                Console.WriteLine("Exceprion: " + e.Message);
-                LastError = "Wyj¹tek:" + e.Message;
+
+                LastError = "Exception:" + e.Message;
             }
 
             return (null);
@@ -905,7 +1274,7 @@ namespace MikroTik.Client
 
                 if (responde.statusCode == 200)
                 {
-                    
+
                     if (OnEventResponde != null && callEvents)
                     {
                         OnEventResponde(responde.statusCode, null);
@@ -932,8 +1301,8 @@ namespace MikroTik.Client
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exceprion: " + e.Message);
-                LastError = "Wyj¹tek:" + e.Message;
+
+                LastError = "Exception:" + e.Message;
                 if (OnEventError != null && callEvents)
                     OnEventError(LastError);
             }
@@ -961,7 +1330,7 @@ namespace MikroTik.Client
             catch (Exception e)
             {
                 callEvents = true;
-                Console.WriteLine("Exceprion: " + e.Message);
+
                 LastError = e.Message;
             }
 
@@ -975,8 +1344,8 @@ namespace MikroTik.Client
 
         public async Task<(bool, object)> GetInterfacesFromCAPsMANAsync()
         {
-            string Url = String.Format("{0}caps-man/interface",MainRouterUrl);
-   
+            string Url = String.Format("{0}caps-man/interface", MainRouterUrl);
+
             try
             {
                 MikroTikRespondeRequest responde = await SendGet(Url);
@@ -998,7 +1367,7 @@ namespace MikroTik.Client
                     return (true, data);
                 }
 
-                var error =  JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
+                var error = JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
                 LastError = error.GetDetailMessage();
 
                 if (OnEventResponde != null && callEvents)
@@ -1006,17 +1375,18 @@ namespace MikroTik.Client
 
                 if (OnEventFailed != null && callEvents)
                     OnEventFailed(error);
-  
+
                 return (false, error);
-            }catch (Exception e)
+            }
+            catch (Exception e)
             {
-                Console.WriteLine("Exceprion: "+e.Message);
-                LastError = "Wyj¹tek:" + e.Message;
+
+                LastError = "Exception:" + e.Message;
                 if (OnEventError != null && callEvents)
                     OnEventError(LastError);
             }
 
-            return  (false, null);
+            return (false, null);
         }
 
         public List<mtCAPsMANInterfaceInfo> GetInterfacesFromCAPsMAN()
@@ -1039,22 +1409,22 @@ namespace MikroTik.Client
             catch (Exception e)
             {
                 callEvents = true;
-                Console.WriteLine("Exceprion: " + e.Message);
-                LastError = "Wyj¹tek:" + e.Message;
+
+                LastError = "Exception:" + e.Message;
             }
 
             return (null);
         }
 
 
-     /***************************************************************************************************
-           GET ALL REMOTE CAP FROM CAPSMAN
-        ****************************************************************************************************/ 
+        /***************************************************************************************************
+              GET ALL REMOTE CAP FROM CAPSMAN
+           ****************************************************************************************************/
 
         public async Task<(bool, object)> GetRemoteCAPFromCAPsMANAsync()
         {
-            string Url = String.Format("{0}caps-man/remote-cap",MainRouterUrl);
-   
+            string Url = String.Format("{0}caps-man/remote-cap", MainRouterUrl);
+
             try
             {
                 MikroTikRespondeRequest responde = await SendGet(Url);
@@ -1076,7 +1446,7 @@ namespace MikroTik.Client
                     return (true, data);
                 }
 
-                var error =  JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
+                var error = JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
                 LastError = error.GetDetailMessage();
 
                 if (OnEventResponde != null && callEvents)
@@ -1084,17 +1454,18 @@ namespace MikroTik.Client
 
                 if (OnEventFailed != null && callEvents)
                     OnEventFailed(error);
-  
+
                 return (false, error);
-            }catch (Exception e)
+            }
+            catch (Exception e)
             {
-                Console.WriteLine("Exceprion: "+e.Message);
-                LastError = "Wyj¹tek:" + e.Message;
+
+                LastError = "Exception:" + e.Message;
                 if (OnEventError != null && callEvents)
                     OnEventError(LastError);
             }
 
-            return  (false, null);
+            return (false, null);
         }
 
         public List<mtCAPsMANRemoteCAPInfo> GetRemoteCAPFromCAPsMAN()
@@ -1117,8 +1488,8 @@ namespace MikroTik.Client
             catch (Exception e)
             {
                 callEvents = true;
-                Console.WriteLine("Exceprion: " + e.Message);
-                LastError = "Wyj¹tek:" + e.Message;
+
+                LastError = "Exception:" + e.Message;
             }
 
             return (null);
@@ -1126,14 +1497,14 @@ namespace MikroTik.Client
 
 
 
-     /***************************************************************************************************
-           GET REGISTRION TABLE FROM CAPSMAN
-        ****************************************************************************************************/ 
+        /***************************************************************************************************
+              GET REGISTRION TABLE FROM CAPSMAN
+           ****************************************************************************************************/
 
         public async Task<(bool, object)> GetRegistrionTableFromCAPsMANAsync()
         {
-            string Url = String.Format("{0}caps-man/registration-table",MainRouterUrl);
-   
+            string Url = String.Format("{0}caps-man/registration-table", MainRouterUrl);
+
             try
             {
                 MikroTikRespondeRequest responde = await SendGet(Url);
@@ -1155,7 +1526,7 @@ namespace MikroTik.Client
                     return (true, data);
                 }
 
-                var error =  JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
+                var error = JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
                 LastError = error.GetDetailMessage();
 
                 if (OnEventResponde != null && callEvents)
@@ -1163,17 +1534,18 @@ namespace MikroTik.Client
 
                 if (OnEventFailed != null && callEvents)
                     OnEventFailed(error);
-  
+
                 return (false, error);
-            }catch (Exception e)
+            }
+            catch (Exception e)
             {
-                Console.WriteLine("Exceprion: "+e.Message);
-                LastError = "Wyj¹tek:" + e.Message;
+
+                LastError = "Exception:" + e.Message;
                 if (OnEventError != null && callEvents)
                     OnEventError(LastError);
             }
 
-            return  (false, null);
+            return (false, null);
         }
 
         public List<mtCAPsMANRegistrationTableInfo> GetRegistrionTableFromCAPsMAN()
@@ -1197,8 +1569,8 @@ namespace MikroTik.Client
             catch (Exception e)
             {
                 callEvents = true;
-                Console.WriteLine("Exceprion: " + e.Message);
-                LastError = "Wyj¹tek:" + e.Message;
+
+                LastError = "Exception:" + e.Message;
             }
 
             return (null);
@@ -1247,8 +1619,8 @@ namespace MikroTik.Client
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exceprion: " + e.Message);
-                LastError = "Wyj¹tek:" + e.Message;
+
+                LastError = "Exception:" + e.Message;
                 if (OnEventError != null && callEvents)
                     OnEventError(LastError);
             }
@@ -1278,8 +1650,8 @@ namespace MikroTik.Client
             catch (Exception e)
             {
                 callEvents = true;
-                Console.WriteLine("Exceprion: " + e.Message);
-                LastError = "Wyj¹tek:" + e.Message;
+
+                LastError = "Exception:" + e.Message;
             }
 
             return (null);
@@ -1294,7 +1666,6 @@ namespace MikroTik.Client
         public async Task<(bool, object)> UpdateeUserToUserManagerAsync(string id, mtRequestNewUserData user)
         {
             string Url = String.Format("{0}user-manager/user/{1}", MainRouterUrl, id);
-
             try
             {
                 MikroTikRespondeRequest responde = await SendPut(Url, user);
@@ -1322,15 +1693,15 @@ namespace MikroTik.Client
                 if (OnEventResponde != null && callEvents)
                     OnEventResponde(responde.statusCode, error);
 
-                if (OnEventFailed != null && callEvents )
+                if (OnEventFailed != null && callEvents)
                     OnEventFailed(error);
 
                 return (false, error);
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exceprion: " + e.Message);
-                LastError = "Wyj¹tek:" + e.Message;
+
+                LastError = "Exception:" + e.Message;
                 if (OnEventError != null && callEvents)
                     OnEventError(LastError);
             }
@@ -1340,7 +1711,7 @@ namespace MikroTik.Client
 
 
 
-        public mtUserManagerInfo UpdateeUserToUserManager(string id, mtRequestNewUserData user)
+        public mtUserManagerInfo UpdateUserToUserManager(string id, mtRequestNewUserData user)
         {
             bool res = false;
             object data;
@@ -1360,8 +1731,8 @@ namespace MikroTik.Client
             catch (Exception e)
             {
                 callEvents = true;
-                Console.WriteLine("Exceprion: " + e.Message);
-                LastError = "Wyj¹tek:" + e.Message;
+
+                LastError = "Exception:" + e.Message;
             }
 
             return (null);
@@ -1378,7 +1749,7 @@ namespace MikroTik.Client
 
             try
             {
-                MikroTikRespondeRequest responde = await SendPost(Url,null);
+                MikroTikRespondeRequest responde = await SendPost(Url, null);
                 if (responde == null) return (false, null);
 
                 if (responde.statusCode == 200)
@@ -1409,8 +1780,8 @@ namespace MikroTik.Client
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exceprion: " + e.Message);
-                LastError = "Wyj¹tek:" + e.Message;
+
+                LastError = "Exception:" + e.Message;
                 if (OnEventError != null && callEvents)
                     OnEventError(LastError);
             }
@@ -1439,8 +1810,8 @@ namespace MikroTik.Client
             catch (Exception e)
             {
                 callEvents = true;
-                Console.WriteLine("Exceprion: " + e.Message);
-                LastError = "Wyj¹tek:" + e.Message;
+
+                LastError = "Exception:" + e.Message;
             }
 
             return (false);
@@ -1487,8 +1858,8 @@ namespace MikroTik.Client
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exceprion: " + e.Message);
-                LastError = "Wyj¹tek:" + e.Message;
+
+                LastError = "Exception:" + e.Message;
                 if (OnEventError != null && callEvents)
                     OnEventError(LastError);
             }
@@ -1517,8 +1888,8 @@ namespace MikroTik.Client
             catch (Exception e)
             {
                 callEvents = true;
-                Console.WriteLine("Exceprion: " + e.Message);
-                LastError = "Wyj¹tek:" + e.Message;
+
+                LastError = "Exception:" + e.Message;
             }
 
             return (false);
@@ -1540,7 +1911,7 @@ namespace MikroTik.Client
 
                 if (responde.statusCode == 200)
                 {
-                    if (OnEventResponde != null && callEvents )
+                    if (OnEventResponde != null && callEvents)
                     {
                         OnEventResponde(responde.statusCode, null);
                     }
@@ -1566,8 +1937,8 @@ namespace MikroTik.Client
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exceprion: " + e.Message);
-                LastError = "Wyj¹tek:" + e.Message;
+
+                LastError = "Exception:" + e.Message;
                 if (OnEventError != null && callEvents)
                     OnEventError(LastError);
             }
@@ -1597,8 +1968,8 @@ namespace MikroTik.Client
             catch (Exception e)
             {
                 callEvents = true;
-                Console.WriteLine("Exceprion: " + e.Message);
-                LastError = "Wyj¹tek:" + e.Message;
+
+                LastError = "Exception:" + e.Message;
             }
 
             return (false);
@@ -1639,7 +2010,7 @@ namespace MikroTik.Client
                 var error = JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
                 LastError = error.Message;
 
-                if (OnEventResponde != null && callEvents )
+                if (OnEventResponde != null && callEvents)
                     OnEventResponde(responde.statusCode, error);
 
                 if (OnEventFailed != null && callEvents)
@@ -1649,8 +2020,8 @@ namespace MikroTik.Client
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exceprion: " + e.Message);
-                LastError = "Wyj¹tek:" + e.Message;
+
+                LastError = "Exception:" + e.Message;
                 if (OnEventError != null && callEvents)
                     OnEventError(LastError);
             }
@@ -1681,8 +2052,8 @@ namespace MikroTik.Client
             catch (Exception e)
             {
                 callEvents = true;
-                Console.WriteLine("Exceprion: " + e.Message);
-                LastError = "Wyj¹tek:" + e.Message;
+
+                LastError = "Exception:" + e.Message;
             }
 
             return (null);
@@ -1736,8 +2107,8 @@ namespace MikroTik.Client
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exceprion: " + e.Message);
-                LastError = "Wyj¹tek:" + e.Message;
+
+                LastError = "Exception:" + e.Message;
                 if (OnEventError != null && callEvents)
                     OnEventError(LastError);
             }
@@ -1755,7 +2126,7 @@ namespace MikroTik.Client
             object data;
             try
             {
-                callEvents= false;
+                callEvents = false;
                 var t = Task.Run(() =>
                 {
                     return CreateSchedulerAsync(scheduler);
@@ -1773,7 +2144,7 @@ namespace MikroTik.Client
             {
                 callEvents = true;
                 Debug.WriteLine("Exceprion: " + e.Message);
-                LastError = "Wyj¹tek:" + e.Message;
+                LastError = "Excpetion:" + e.Message;
             }
 
             return (false);
@@ -1801,7 +2172,7 @@ namespace MikroTik.Client
             {
                 callEvents = true;
                 Debug.WriteLine("Exceprion: " + e.Message);
-                LastError = "Wyj¹tek:" + e.Message;
+                LastError = "Exception:" + e.Message;
             }
 
             return (null);
@@ -1852,8 +2223,8 @@ namespace MikroTik.Client
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exceprion: " + e.Message);
-                LastError = "Wyj¹tek:" + e.Message;
+
+                LastError = "Exception:" + e.Message;
                 if (OnEventError != null && callEvents)
                     OnEventError(LastError);
             }
@@ -1882,8 +2253,8 @@ namespace MikroTik.Client
             catch (Exception e)
             {
                 callEvents = true;
-                Console.WriteLine("Exceprion: " + e.Message);
-                LastError = "Wyj¹tek:" + e.Message;
+
+                LastError = "Exception:" + e.Message;
             }
 
             return (false);
@@ -1910,13 +2281,179 @@ namespace MikroTik.Client
             catch (Exception e)
             {
                 callEvents = true;
-                Console.WriteLine("Exceprion: " + e.Message);
-                LastError = "Wyj¹tek:" + e.Message;
+
+                LastError = "Exception:" + e.Message;
+            }
+
+            return (null);
+        }
+
+
+
+        /***************************************************************************************************
+        GET ALL RADIUS SERVICES -
+         ****************************************************************************************************/
+
+        public async Task<(bool, object)> GetRadiusServicesAsync()
+        {
+            string Url = String.Format("{0}radius", MainRouterUrl);
+
+            try
+            {
+                MikroTikRespondeRequest responde = await SendGet(Url);
+                if (responde == null) return (false, null);
+
+                if (responde.statusCode == 200)
+                {
+                    var data = JsonSerializer.Deserialize<List<mtRadiusService>>(responde.data.ToString());
+
+                    if (OnEventResponde != null && callEvents)
+                    {
+                        OnEventResponde(responde.statusCode, data);
+                    }
+
+                    if (OnEventSuccess != null && callEvents)
+                    {
+                        OnEventSuccess(data);
+                    }
+
+                    return (true, data);
+                }
+
+                var error = JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
+                LastError = error.Message;
+
+                if (OnEventResponde != null && callEvents)
+                    OnEventResponde(responde.statusCode, error);
+
+                if (OnEventFailed != null && callEvents)
+                    OnEventFailed(error);
+
+                return (false, error);
+            }
+            catch (Exception e)
+            {
+
+                LastError = "Exception:" + e.Message;
+                if (OnEventError != null && callEvents)
+                    OnEventError(LastError);
+            }
+
+            return (false, null);
+        }
+
+
+
+        public List<mtRadiusService> GetRadiusServices()
+        {
+            bool res = false;
+            object data;
+            try
+            {
+                callEvents = false;
+                var t = Task.Run(() =>
+                {
+                    return GetRadiusServicesAsync();
+                });
+
+                (res, data) = t.Result;
+
+                callEvents = true;
+                if (res)
+                    return (List<mtRadiusService>)data;
+            }
+            catch (Exception e)
+            {
+                callEvents = true;
+
+                LastError = "Exception:" + e.Message;
+            }
+
+            return (null);
+        }
+
+
+        /***************************************************************************************************
+        GET ALL RADIUS ROUTE -
+         ****************************************************************************************************/
+
+        public async Task<(bool, object)> GetRadiusRouterAsync()
+        {
+            string Url = String.Format("{0}user-manager/router", MainRouterUrl);
+
+            try
+            {
+                MikroTikRespondeRequest responde = await SendGet(Url);
+                if (responde == null) return (false, null);
+
+                if (responde.statusCode == 200)
+                {
+                    var data = JsonSerializer.Deserialize<List<mtRadiusRouter>>(responde.data.ToString());
+
+                    if (OnEventResponde != null && callEvents)
+                    {
+                        OnEventResponde(responde.statusCode, data);
+                    }
+
+                    if (OnEventSuccess != null && callEvents)
+                    {
+                        OnEventSuccess(data);
+                    }
+
+                    return (true, data);
+                }
+
+                var error = JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
+                LastError = error.Message;
+
+                if (OnEventResponde != null && callEvents)
+                    OnEventResponde(responde.statusCode, error);
+
+                if (OnEventFailed != null && callEvents)
+                    OnEventFailed(error);
+
+                return (false, error);
+            }
+            catch (Exception e)
+            {
+
+                LastError = "Exception:" + e.Message;
+                if (OnEventError != null && callEvents)
+                    OnEventError(LastError);
+            }
+
+            return (false, null);
+        }
+
+
+
+        public List<mtRadiusRouter> GetRadiusRouter()
+        {
+            bool res = false;
+            object data;
+            try
+            {
+                callEvents = false;
+                var t = Task.Run(() =>
+                {
+                    return GetRadiusRouterAsync();
+                });
+
+                (res, data) = t.Result;
+
+                callEvents = true;
+                if (res)
+                    return (List<mtRadiusRouter>)data;
+            }
+            catch (Exception e)
+            {
+                callEvents = true;
+
+                LastError = "Exception:" + e.Message;
             }
 
             return (null);
         }
 
     }
-
 }

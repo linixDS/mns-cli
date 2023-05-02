@@ -2,26 +2,34 @@
 
 remote/bin/
 remote/obj/
+remote/.vs/
 
 mikrotik/bin/
 mikrotik/obj/
+mikrotik/.vs/
 
 core/bin/
 core/obj/
+core/.vs/
 
 runtime/bin/
 runtime/obj/
+runtime/.vs/
 
 module/bin/
 module/obj/
+module/.vs/
 
 mns-cli/bin/
 mns-cli/obj/
+mns-cli/.vs/
 
 fortigate/bin/
 fortigate/obj/
+fortigate/.vs/
 
 network/bin/
 network/obj/
+network/.vs/
 
 build/
