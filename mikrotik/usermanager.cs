@@ -81,7 +81,10 @@ namespace mikrotik
                 var R = String.Empty;
                 foreach (var info in result)
                 {
-                    if (info.Disabled == "true") R = "D";
+                    if (info.Disabled == "false")
+                       R = "";
+                    else
+                        R = "D";
 
                     Console.WriteLine("{0,-1} {1,-6} {2,-25} {3,-18} {4,-6} {5,-25}", 
                             R, 
@@ -143,7 +146,10 @@ namespace mikrotik
                 var R = String.Empty;
                 foreach (var info in result)
                 {
-                    if (info.Disabled == "true") R = "D";
+                    if (info.Disabled == "false")
+                       R = "";
+                    else
+                        R = "D";
                     string[] attr = info.Attributes.Split(',');
 
                     Console.WriteLine("{0,-1} {1,-6} {2,-18} {3,-25} {4,-10}  {5,-40}", R, info.Id, info.Name, info.Group, attr.Length, info.Comment);
