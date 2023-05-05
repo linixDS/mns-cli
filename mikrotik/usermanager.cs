@@ -32,6 +32,7 @@ namespace mikrotik
             Console.WriteLine("\t mikrotik usermanger user-search <input1: value> <input2: profile>");
             Console.WriteLine("\t mikrotik usermanger user-new <input1: name> <input2: password> <input3: group> <input4: profile>");
             Console.WriteLine("\t mikrotik usermanger user-change <input1: id> <input2: name> <input3: password> <input4: group> <input5: profile>");
+            Console.WriteLine("\t mikrotik usermanger user-remove <input1: id> <input2: profile>");
 
             Console.WriteLine("\t mikrotik usermanger groups <input: profile>");
             Console.WriteLine("\t mikrotik usermanger group <input1: id> <input2: profile>");
@@ -344,6 +345,39 @@ namespace mikrotik
                 }
 
                 Terminal.WriteText("Changed user data id: " + result.Id, ConsoleColor.Green, Console.BackgroundColor);
+            }
+            catch (Exception error)
+            {
+                Terminal.ErrorWrite("Error: " + error.Message);
+            }
+            Console.WriteLine();
+        }
+
+
+        public void user_remove(string id, string profileName)
+        {
+            try
+            {
+                var profile = new PROFILECLASS();
+                var config = profile.load(profileName);
+                if (config == null)
+                {
+                    Terminal.ErrorWrite("No found profile: " + profileName);
+                    return;
+                }
+                Terminal.WriteText("::MikroTik Removing user data id: " + id, ConsoleColor.Green, Console.BackgroundColor);
+
+
+
+                var client = new MikroTikClientRestApi(config.Address, config.User, config.Password);
+                var result = client.RemoveUserFromUserManager(id);
+                if (!result)
+                {
+                    Terminal.ErrorWrite("Error: " + client.GetLastErrorMessage());
+                    return;
+                }
+
+                Terminal.WriteText("Removed user data id: " + id, ConsoleColor.Green, Console.BackgroundColor);
             }
             catch (Exception error)
             {

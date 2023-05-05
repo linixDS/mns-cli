@@ -37,9 +37,12 @@ namespace mikrotik
             Console.WriteLine("\t mikrotik radius search <input: value>");
 
             Console.WriteLine("\t mikrotik radius new-user <input1: name> <input2: group> <input3: comment>");
+            Console.WriteLine("\t mikrotik radius remove-user: <input: name>");
+
             Console.WriteLine("\t mikrotik radius change-user <input1: name> <input2: newName|null> <input3: newgroup|null> <input4: newComment|null>");
             Console.WriteLine("\t mikrotik radius change-user-name <input1: name> <input2: newName>");
             Console.WriteLine("\t mikrotik radius change-user-group <input1: name> <input2: group> <input3: comment>");
+
 
             Console.WriteLine("\t mikrotik radius user-enable <input1: name>");
             Console.WriteLine("\t mikrotik radius user-disable <input1: name>");
@@ -401,6 +404,81 @@ namespace mikrotik
         public void user_disable(string name)
         {
             changeUser(name, "null", "null", "null", true);
+        }
+
+        public void remove_user(string name)
+        {
+            try
+            {
+                var profile = new PROFILECLASS();
+                var profileName = "master";
+                var config1 = profile.load(profileName);
+                if (config1 == null)
+                {
+                    Terminal.ErrorWrite("No found profile: " + profileName);
+                    Console.WriteLine();
+                    return;
+                }
+
+                profileName = "slave";
+
+                var config2 = profile.load(profileName);
+                if (config2 == null)
+                {
+                    Terminal.ErrorWrite("No found profile: " + profileName);
+                    Console.WriteLine();
+                    return;
+                }
+                Terminal.WriteText("::MikroTik Removing user: "+name, ConsoleColor.Green, Console.BackgroundColor);
+
+                Terminal.WriteText("::Checking user from server master: " + config1.Address, ConsoleColor.Yellow, Console.BackgroundColor);
+                var currentUser1 = GetUser(name, config1);
+                if (currentUser1 == null)
+                {
+                    Terminal.ErrorWrite("Error: No found user (master): " + name);
+                    Console.WriteLine();
+                    return;
+                }
+
+                Terminal.WriteText("::Checking user from server slave: " + config2.Address, ConsoleColor.Yellow, Console.BackgroundColor);
+                var currentUser2 = GetUser(name, config2);
+                if (currentUser2 == null)
+                {
+                    Terminal.ErrorWrite("Error: No found user (slave): " + name);
+                    Console.WriteLine();
+                    return;
+                }
+
+
+                Terminal.WriteText("::Removing user to master server: " + config1.Address, ConsoleColor.Magenta, Console.BackgroundColor);
+                var client = new MikroTikClientRestApi(config1.Address, config1.User, config1.Password);
+                var result1 = client.RemoveUserFromUserManager(currentUser1.Id);
+                if (!result1)
+                {
+                    Terminal.ErrorWrite("Error: " + client.GetLastErrorMessage());
+                    Console.WriteLine();
+                    return;
+                }
+                Console.WriteLine();
+
+                Terminal.WriteText("::Removing user to slave server: " + config2.Address, ConsoleColor.Magenta, Console.BackgroundColor);
+                client = new MikroTikClientRestApi(config2.Address, config2.User, config2.Password);
+
+                var result2 = client.RemoveUserFromUserManager(currentUser2.Id);
+                if (!result2)
+                {
+                    Terminal.ErrorWrite("Error save backup: " + client.GetLastErrorMessage());
+                    Console.WriteLine();
+                    return;
+                }
+
+                 Terminal.WriteText("Done." , ConsoleColor.Green, Console.BackgroundColor);
+            }
+            catch (Exception error)
+            {
+                Terminal.ErrorWrite("Error: " + error.Message);
+            }
+            Console.WriteLine();
         }
     }
 }

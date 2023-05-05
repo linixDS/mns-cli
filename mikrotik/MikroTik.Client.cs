@@ -281,6 +281,125 @@ namespace MikroTik.Client
         }
 
 
+      private async Task<MikroTikRespondeRequest> SendDelete(string url)
+        {
+            LastError = "";
+            HttpResponseMessage response;
+            StringContent content = null;
+            try
+            {
+
+                if (OnEventRequest != null && callEvents)
+                    OnEventRequest(url, null);
+
+                response = await client.PutAsync(url, content);
+
+                var json = "";
+                if ((int)response.StatusCode == 204)
+                {
+                    json = await response.Content.ReadAsStringAsync();
+                    json = json.Replace("\0", "");
+                    Debug.WriteLine(" -> RESPONDE DATA:" + json);
+                }
+                else
+                {
+                    var errorMessage = new mtErrorMessage((int)response.StatusCode, response.StatusCode.ToString(), "");
+                    json = errorMessage.ToString();
+                    LastError = "Error: Server responde code" + response.StatusCode.ToString();
+                }
+
+
+                MikroTikRespondeRequest responde = new MikroTikRespondeRequest((int)response.StatusCode, json);
+                return responde;
+            }
+            catch (Exception e)
+            {
+                LastError = "Exception: " + e.Message;
+                if (OnEventError != null && callEvents)
+                    OnEventError(LastError);
+            }
+
+            return null;
+        }
+
+
+        /***************************************************************************************************
+               DELETE USER FROM MIKROTIK USER MANAGER
+        ****************************************************************************************************/
+        public async Task<(bool, object)> RemoveUserFromUserManagerAsync(string id)
+        {
+            string Url = String.Format("{0}user-manager/user/{1}", MainRouterUrl, id);
+            Debug.WriteLine("DeleteUserAccount Connecting: " + Url);
+
+
+            try
+            {
+                MikroTikRespondeRequest responde = await SendDelete(Url);
+                if (responde == null) return (false, null);
+
+                if (responde.statusCode == 204)
+                {
+
+                    if (OnEventResponde != null && callEvents)
+                    {
+                        OnEventResponde(responde.statusCode, null);
+                    }
+
+                    if (OnEventSuccess != null && callEvents)
+                    {
+                        OnEventSuccess(null);
+                    }
+
+                    return (true, null);
+                }
+
+                var error = JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
+                LastError = error.GetDetailMessage();
+
+                if (OnEventResponde != null && callEvents)
+                    OnEventResponde(responde.statusCode, error);
+
+                if (OnEventFailed != null && callEvents)
+                    OnEventFailed(error);
+
+                return (false, error);
+            }
+            catch (Exception e)
+            {
+                LastError = "Exception: " + e.Message;
+                if (OnEventError != null && callEvents)
+                    OnEventError(LastError);
+            }
+
+            return (false, null);
+        }  
+
+        public bool RemoveUserFromUserManager(string id)
+        {
+            bool res = false;
+            object data;
+            try
+            {
+                callEvents = false;
+
+                var t = Task.Run(() =>
+                {
+                    return RemoveUserFromUserManagerAsync(id);
+                });
+                (res, data) = t.Result;
+
+                callEvents = true;
+                return res;
+            }
+            catch (Exception e)
+            {
+                callEvents = true;
+
+                LastError = "Exception:" + e.Message;
+            }
+
+            return false;
+        }
 
 
         /***************************************************************************************************

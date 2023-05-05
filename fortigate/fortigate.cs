@@ -516,7 +516,7 @@ namespace fortigate
             Console.WriteLine("SYNTEX");
             Console.WriteLine("\t fortigate devices help");
             Console.WriteLine("\t fortigate devices show <input: profile>");
-            Console.WriteLine("\t fortigate devices filter <input1: value> <input2: profile>");
+            Console.WriteLine("\t fortigate devices search <input1: value> <input2: profile>");
             Console.WriteLine("");
         }
 
@@ -549,7 +549,35 @@ namespace fortigate
             }
         }
 
-        public void filter(string value, string profileName)
+        public List<string> GetAddressIP(string value, string profileName)
+        {
+            List<string> result = new List<string>();
+            try
+            {
+                List<FortiRegisterDevice> results = GetData(profileName);
+                if (results == null)
+                {
+                  Environment.Exit(-1);
+                  return result;
+                }
+
+                foreach (var data in results)
+                {
+                    if (data.Hostname.Contains(value))
+                    {
+                        result.Add(data.IP);
+                    }
+                }
+                return result;
+            }
+            catch (Exception error)
+            {
+                Environment.Exit(-1);
+            }
+            return result;
+        }
+
+        public void search(string value, string profileName)
         {
             try
             {
