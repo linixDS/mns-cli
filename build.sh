@@ -51,7 +51,7 @@ if [ "$1" == "install" ] ; then
          mkdir ./build/modules/mikrotik
     fi
 
-    cp ./mikrotik/bin/Debug/net7.0/remote.dll ././build/modules/mikrotik/
+    cp ./mikrotik/bin/Debug/net7.0/mikrotik.dll ././build/modules/mikrotik/
     cp ./mikrotik/bin/Debug/net7.0/core.dll ././build/modules/mikrotik/
     cp ./mikrotik/package.json ././build/modules/mikrotik/
     cp ./mikrotik/winbox64.exe ././build/modules/mikrotik/

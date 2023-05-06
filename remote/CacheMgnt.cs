@@ -10,7 +10,7 @@ namespace CacheManagment
     public class CacheProperty
     {
         public string Name { get; set; }
-        public boolean Enabled { get; set; }
+        public bool Enabled { get; set; }
         public string FileName { get; set; }
         public int LiveTimeSec { get; set; }
 
