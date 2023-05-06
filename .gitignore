@@ -32,4 +32,8 @@ network/bin/
 network/obj/
 network/.vs/
 
+console/bin/
+console/obj/
+console/.vs/
+
 build/

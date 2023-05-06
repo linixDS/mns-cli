@@ -276,10 +276,10 @@ namespace fortigate
 
         public void leases(string profileName)
         {
+            Terminal.WriteText("::List DHCP leases", ConsoleColor.Green, Console.BackgroundColor);
+            Console.WriteLine();
             try
             {
-                Terminal.WriteText("::List DHCP leases", ConsoleColor.Green, Console.BackgroundColor);
-                Console.WriteLine();
                 List<FortiDHCPLease> result = GetData(profileName);
                 if (result == null) return;
    

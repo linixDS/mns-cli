@@ -1,5 +1,68 @@
 ﻿namespace Core
 {
+
+    public class Input
+    {
+        public static bool ChoiceYesNo()
+        {
+            LabelChoiceYesNo:
+            var cki = Console.ReadKey();
+
+            if (cki.KeyChar != 'Y' &&
+                cki.KeyChar != 'y' &&
+                cki.KeyChar != 'n' &&
+                cki.KeyChar != 'N')
+            {
+                Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
+                goto LabelChoiceYesNo;
+            }
+
+            if (cki.KeyChar == 'Y' || cki.KeyChar == 'y')
+                return true;
+            else
+                return false;
+        }
+
+        public static string ChoiceList(List<string> list, string title)
+        {
+            Console.WriteLine(title);
+            var idx = 1;
+            foreach (var txt in list)
+            {
+                Console.WriteLine("   {0,-3} {1}", idx.ToString() + ".", list[idx - 1]);
+                idx++;
+            }
+            Console.WriteLine();
+
+
+            LabelChoiceSelect:
+
+            Console.Write("Choice [1-{0}]:\t", list.Count);
+            var posX = Console.CursorLeft;
+            Console.Write("                  ");
+            Console.SetCursorPosition(posX, Console.CursorTop);
+            var input = Console.ReadLine();
+
+
+            int choice;
+            if (!int.TryParse(input, out choice))
+            {
+                Console.SetCursorPosition(0, Console.CursorTop - 1);
+                goto LabelChoiceSelect;
+            }
+
+            if (choice < 1 || choice > list.Count)
+            {
+                Console.SetCursorPosition(0, Console.CursorTop - 1);
+                goto LabelChoiceSelect;
+            }
+
+
+            return list[choice - 1];
+        }
+    }
+
+
     public class Terminal
     {
         public static int ExecuteProcess(string cmd, string args, bool wait = true)

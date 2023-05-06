@@ -10,6 +10,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
+using CacheManagment;
+
 
 namespace MikroTik.Client
 {
@@ -243,6 +245,24 @@ namespace MikroTik.Client
         {
             LastError = "";
             HttpResponseMessage response;
+            MikroTikRespondeRequest res;
+
+            var cache = new DataCache();
+            cache.LoadConfig();
+            var cacheData = cache.Find(url);
+            if (cacheData != null)
+            {
+                if (!cache.IsRenewCache(cacheData))
+                {
+                    var value = cache.GetCacheValue(cacheData);
+                    if (value != null)
+                    {
+                        res = new MikroTikRespondeRequest(200, value);
+                        return res;
+                    }
+
+                }
+            }
 
             try
             {
@@ -259,6 +279,11 @@ namespace MikroTik.Client
                     json = await response.Content.ReadAsStringAsync();
                     json = json.Replace("\0", "");
                     Debug.WriteLine(" -> RESPONDE DATA:" + json);
+
+                    if (cacheData == null)
+                        cache.SaveCacheValue(new CacheProperty(url), json);
+                    else
+                        cache.UpdateCacheValue(cacheData, json);
                 }
                     else
                 {
@@ -267,7 +292,7 @@ namespace MikroTik.Client
                     LastError = "Error: Server responde code" + response.StatusCode.ToString();
                 }
 
-                MikroTikRespondeRequest res = new MikroTikRespondeRequest((int)response.StatusCode, json);
+                res = new MikroTikRespondeRequest((int)response.StatusCode, json);
                 return res;
             }
             catch (Exception e)

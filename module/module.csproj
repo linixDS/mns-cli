@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\core\core.csproj" />
+    <ProjectReference Include="..\runtime\runtime.csproj" />
   </ItemGroup>
 
 </Project>

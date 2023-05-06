@@ -22,9 +22,20 @@ namespace Runtime
                     return;
                 }
 
+
                 string methodName = null;
-                string moduleName = args[0];
+                string moduleName = null;
                 string className = null;
+
+                if (args[0] == "help")
+                {
+                    moduleName = "module";
+                    className = "GLOBALHELP";
+                }
+                else
+                    moduleName = args[0];
+
+
 
                 if (args.Length > 1)
                     className = args[1];

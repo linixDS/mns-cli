@@ -48,7 +48,7 @@ if "%1" == "install" (
     exit 0
 )
 
-if "%1" == "compile" (
+if "%1" == "build" (
     echo "----------------------------------------------"
     echo "::Compiling library core.dll"
     echo "----------------------------------------------"
@@ -108,7 +108,7 @@ if "%1" == "compile" (
     exit 0
 )
 
-echo "build.bat compile"
+echo "build.bat build"
 echo "build.bat install"
 
 

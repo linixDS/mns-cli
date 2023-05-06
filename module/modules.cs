@@ -6,10 +6,11 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;  
 using Core;
+using Runtime;
 
 namespace module
 {
-    
+
     public class PackageInfo
     {
         [JsonPropertyName("name")]
@@ -76,6 +77,46 @@ namespace module
         }
     }
 
+
+    public class GLOBALHELPCLASS
+    {
+        public GLOBALHELPCLASS()
+        {
+            string path = "." + Path.DirectorySeparatorChar + ".." + Path.DirectorySeparatorChar;
+            string[] dirs = Directory.GetDirectories(path, "*", SearchOption.TopDirectoryOnly);
+
+            Console.Clear();
+            Console.WriteLine("Network Managment Servces - Client Terminal v0.1");
+            Console.WriteLine("Copyrigh(c) 2023 by Dariusz Marcisz");
+            Console.WriteLine("");
+
+            Console.WriteLine("NAME");
+            Console.WriteLine("\t Global help ");
+            Console.WriteLine("");
+            Console.WriteLine("SHORT DESCRIPTION");
+            Console.WriteLine("\tList of available modules.");
+            Console.WriteLine("");
+            Console.WriteLine("SYNTEX");
+            foreach (string dir in dirs)
+            {
+                var info = PACKAGECLASS.Load(dir);
+                string version = String.Empty;
+                string author = String.Empty;
+                string desc = String.Empty;
+                string name = dir.Replace(path, "");
+
+                if (info != null)
+                {
+                    name = info.Name;
+                    Console.WriteLine(string.Format("\t {0,-15} help",name,"help"));
+                }
+
+
+            }
+
+            Console.WriteLine("");
+        }
+    }
 
     public class LISTCLASS
     {

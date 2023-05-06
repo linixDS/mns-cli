@@ -6,11 +6,116 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Core;
+using FortiOS.Types;
+using FortiOS.Client;
 using System.Runtime.InteropServices;
 
 
 namespace remote
 {
+
+    internal class FortiGateConfig
+    {
+        public int Port { get; set; }
+        public string Address { get; set; }
+        public string Token { get; set; }
+
+        public FortiGateConfig()
+        {
+            this.Port = 0;
+            this.Address = string.Empty;
+            this.Token = string.Empty;
+        }
+
+    }
+
+    internal class FortiGateProfiles
+    {
+
+        public FortiGateConfig load(string name)
+        {
+            try
+            {
+                var fileName = name + ".profile";
+                if (!File.Exists(fileName)) return null;
+
+                string json = File.ReadAllText(fileName);
+                var config = JsonSerializer.Deserialize<FortiGateConfig>(json);
+                if (config.Token.Length > 1)
+                    config.Token = Core.Crypto.Decrypt(config.Token, "hoff01HOFF02");
+
+                return config;
+            }
+            catch (Exception error)
+            {
+                Terminal.ErrorWrite("Error: " + error.Message);
+                return null;
+            }
+        }
+    }
+
+    internal class FortiGateClass
+    {
+        private List<FortiRegisterDevice> GetData()
+        {
+            try
+            {
+                var path = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + ".." + Path.DirectorySeparatorChar + "fortigate" + Path.DirectorySeparatorChar + "default";
+                var profile = new FortiGateProfiles();
+                var config = profile.load(path);
+                if (config == null)
+                {
+                    Terminal.ErrorWrite("No found profile.");
+                    return null;
+                }
+
+                var client = new FortiClient(config.Address, config.Port, config.Token);
+                List<FortiRegisterDevice> result = client.GetAllDevicesFromNetwork();
+                if (result == null)
+                {
+                    Terminal.ErrorWrite(client.GetLastError());
+                    return null;
+                }
+
+                return result;
+            }
+            catch (Exception error)
+            {
+                Terminal.ErrorWrite(error.Message);
+                return null;
+            }
+        }
+
+        public List<string> GetAddressIP(string value)
+        {
+            List<string> result = new List<string>();
+            try
+            {
+                List<FortiRegisterDevice> results = GetData();
+                if (results == null)
+                {
+                    Environment.Exit(-1);
+                    return result;
+                }
+
+                foreach (var data in results)
+                {
+                    if (data.Hostname.Contains(value))
+                    {
+                        result.Add(data.IP);
+                    }
+                }
+                return result;
+            }
+            catch (Exception error)
+            {
+                Environment.Exit(-1);
+            }
+            return result;
+        }
+    }
+
+
     public class HELPCLASS
     {
         public HELPCLASS()
@@ -46,6 +151,7 @@ namespace remote
             Console.WriteLine("SYNTEX");
             Console.WriteLine("\t remote ssh help");
             Console.WriteLine("\t remote ssh connect <input1: ip address> <input2: port> <input3: user>");
+            Console.WriteLine("\t remote ssh connect-name <input1: hostname> <input2: port> <input3: user>");
             Console.WriteLine("\t remote ssh load <input: profile>");
             Console.WriteLine("");
         }
@@ -58,6 +164,39 @@ namespace remote
                 string strCmdText;
                 string command;
                 strCmdText = String.Format("{0}@{1} -p {2}",user,address,port);
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    command = "ssh.exe";
+                }
+                else
+                {
+                    command = "/usr/bin/ssh";
+                }
+
+                Terminal.ExecuteProcess(command, strCmdText);
+            }
+            catch (Exception error)
+            {
+                Terminal.ErrorWrite("Error: " + error.Message);
+            }
+            Console.WriteLine();
+        }
+
+        public void connect_name(string hostname, string port, string user)
+        {
+
+
+            try
+            {
+                Terminal.WriteText("::Searching hostname from database FortiGate: " + hostname + ":" + port, ConsoleColor.Yellow, Console.BackgroundColor);
+                FortiGateClass client = new FortiGateClass();
+                var list = client.GetAddressIP(hostname);
+                if (list == null) return;
+                Terminal.WriteText("::Connecting to SSH server: " + hostname + ":" + port, ConsoleColor.Green, Console.BackgroundColor);
+                var address = "";
+                string strCmdText;
+                string command;
+                strCmdText = String.Format("{0}@{1} -p {2}", user, address, port);
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
                     command = "ssh.exe";

@@ -26,6 +26,7 @@ namespace Runtime
                 this.MethodName = methodName.ToLower();
         }
 
+
         public void SetParams(string[] values)
         {
             inputValues = new object[values.Length];
@@ -33,14 +34,31 @@ namespace Runtime
                 inputValues[idx] = values[idx];
         }
 
-        
-        private Assembly LoadModule()
+  
+
+        public bool IsModuleExists(string moduleName)
+        {
+            var path = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + "modules" +
+                Path.DirectorySeparatorChar + moduleName +
+                Path.DirectorySeparatorChar + moduleName + ".dll";
+
+            if (!File.Exists(path))
+                return false;
+            else
+                return true;
+
+        }
+
+
+        private Assembly LoadModule(string moduleName)
         {
             try
             {
                 var path = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + "modules" +
-                                Path.DirectorySeparatorChar + ModuleName +
-                                Path.DirectorySeparatorChar + ModuleName + ".dll";
+                                Path.DirectorySeparatorChar + moduleName +
+                                Path.DirectorySeparatorChar + moduleName + ".dll";
+
+
                 return Assembly.LoadFile(path);
             }
             catch (Exception error)
@@ -50,18 +68,20 @@ namespace Runtime
             }
         }
 
-        private void SetRootDirectory()
+        private void SetRootModuleDirectory(string moduleName)
         {
             try
             {
                 var path = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + "modules" +
-                               Path.DirectorySeparatorChar + ModuleName;
+                               Path.DirectorySeparatorChar + moduleName;
                 Directory.SetCurrentDirectory(path);
             }
-            catch (Exception) 
-            { 
+            catch (Exception error) 
+            {
+                Terminal.ErrorWrite("Error: " + error.Message);
             }
         }
+
 
 
         private Type LoadClass(Assembly module)
@@ -78,13 +98,19 @@ namespace Runtime
             }
         }
 
-        public Assembly SelectModule(string module)
+        public Assembly SelectModule(string moduleName)
         {
-            ModuleName = module;
-            var result = LoadModule();
-            if (result == null)
-                ModuleName = null;
-            return result;
+            if (IsModuleExists(moduleName))
+            {
+                var result = LoadModule(moduleName);
+
+                return result;
+            }
+            else
+            {
+                Terminal.ErrorWrite("Error: No found module: "+moduleName);
+                return null;
+            }
         }
 
         public int Run()
@@ -100,9 +126,9 @@ namespace Runtime
 
             try
             {
-                module = LoadModule();
+                module = LoadModule(ModuleName);
                 if (module == null) return -1;
-                SetRootDirectory();
+                SetRootModuleDirectory(ModuleName);
             }
             catch (Exception error)
             {

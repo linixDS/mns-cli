@@ -68,7 +68,7 @@ if [ "$1" == "install" ] ; then
     exit 0
 fi
 
-if [ "$1" == "compile" ] ; then
+if [ "$1" == "build" ] ; then
     echo "----------------------------------------------"
     echo "::Compiling library core.dll"
     echo "----------------------------------------------"
@@ -128,7 +128,7 @@ if [ "$1" == "compile" ] ; then
     exit 0
 fi
 
-echo "build.sh compile"
+echo "build.sh build"
 echo "build.sh install"
 
 
