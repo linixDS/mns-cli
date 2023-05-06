@@ -10,6 +10,7 @@ namespace CacheManagment
     public class CacheProperty
     {
         public string Name { get; set; }
+        public boolean Enabled { get; set; }
         public string FileName { get; set; }
         public int LiveTimeSec { get; set; }
 
@@ -17,6 +18,7 @@ namespace CacheManagment
         {
             Name = String.Empty;
             FileName = String.Empty;
+            Enabled = true;
             LiveTimeSec = 300;
         }
 
@@ -24,6 +26,7 @@ namespace CacheManagment
         {
             Name = name;
             FileName = Guid.NewGuid().ToString() + ".cache";
+            Enabled = true;
             LiveTimeSec = time;
         }
     }
@@ -117,7 +120,8 @@ namespace CacheManagment
 
         public bool IsRenewCache(CacheProperty item)
         {
-            if (item == null) return false;
+            if (item == null) return true;
+            if (!item.Enabled) return true;
 
             try
             {
