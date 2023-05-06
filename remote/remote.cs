@@ -113,6 +113,33 @@ namespace remote
             }
             return result;
         }
+
+        public static string SelectAddressIP(string hostname)
+        {
+            string address = null;
+            Terminal.WriteText("::Searching hostname from database FortiGate: " + hostname, ConsoleColor.Yellow, Console.BackgroundColor);
+            FortiGateClass client = new FortiGateClass();
+            var list = client.GetAddressIP(hostname);
+            if (list == null)
+            {
+                Terminal.ErrorWrite("No found hostname: " + hostname);
+                return null;
+            }
+
+
+            if (list.Count > 1)
+            {
+                list.Add("Cancel");
+                address = Input.ChoiceList(list, "Select address IP: ");
+                if (address == "Cancel") return null;
+            }
+            else
+            {
+                address = list[0];
+            }
+
+            return address;
+        }
     }
 
 
@@ -182,18 +209,19 @@ namespace remote
             Console.WriteLine();
         }
 
+
         public void connect_name(string hostname, string port, string user)
         {
 
 
             try
             {
-                Terminal.WriteText("::Searching hostname from database FortiGate: " + hostname + ":" + port, ConsoleColor.Yellow, Console.BackgroundColor);
-                FortiGateClass client = new FortiGateClass();
-                var list = client.GetAddressIP(hostname);
-                if (list == null) return;
-                Terminal.WriteText("::Connecting to SSH server: " + hostname + ":" + port, ConsoleColor.Green, Console.BackgroundColor);
-                var address = "";
+                var address = FortiGateClass.SelectAddressIP(hostname);
+                if (address == null) return;
+
+
+                Terminal.WriteText("::Connecting to SSH server: " + address + ":" + port, ConsoleColor.Green, Console.BackgroundColor);
+
                 string strCmdText;
                 string command;
                 strCmdText = String.Format("{0}@{1} -p {2}", user, address, port);
@@ -244,6 +272,7 @@ namespace remote
             Console.WriteLine("SYNTEX");
             Console.WriteLine("\t remote vnc help");
             Console.WriteLine("\t remote vnc connect <input: ip address>");
+            Console.WriteLine("\t remote vnc connect-name <input: hostname>");
             Console.WriteLine("");
         }
 
@@ -276,9 +305,40 @@ namespace remote
 
         }
 
-    }
+        public void connect_name(string hostname)
+        {
+            var address = FortiGateClass.SelectAddressIP(hostname);
+            if (address == null) return;
 
-    public class PSSESSIONCLASS
+            Terminal.WriteText("::Connecting to VNC server: " + address, ConsoleColor.Green, Console.BackgroundColor);
+            try
+            {
+                string strCmdText;
+                string command;
+
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    strCmdText = address;
+                    command = "vnc.exe";
+                }
+                else
+                {
+                    strCmdText = address;
+                    command = "./vnc.sh";
+                }
+
+                Terminal.ExecuteProcess(command, strCmdText);
+            }
+            catch (Exception error)
+            {
+                Terminal.ErrorWrite("Error: " + error.Message);
+            }
+            Console.WriteLine();
+
+        }
+}
+
+public class PSSESSIONCLASS
     {
         public void help()
         {
@@ -291,7 +351,8 @@ namespace remote
             Console.WriteLine("");
             Console.WriteLine("SYNTEX");
             Console.WriteLine("\t remote pssession help");
-            Console.WriteLine("\t remote psession  connect <input: ip address>");
+            Console.WriteLine("\t remote psession connect <input: ip address>");
+            Console.WriteLine("\t remote psession connect-name <input: hostname>");
             Console.WriteLine("");
         }
 
@@ -320,7 +381,36 @@ namespace remote
                 Terminal.ErrorWrite("Error: " + error.Message);
             }
             Console.WriteLine();
+        }
 
+        public void connect_name(string hostname)
+        {
+            var address = FortiGateClass.SelectAddressIP(hostname);
+            if (address == null) return;
+
+            Terminal.WriteText("::Connecting to ComputerNamer: " + address, ConsoleColor.Green, Console.BackgroundColor);
+            try
+            {
+                string strCmdText;
+                string command;
+                strCmdText = "-NoExit -Command " + "\"& {Enter-PSSession -Credential (Get-Credential) -ComputerName " + address + "}\"";
+
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    command = "powershell.exe";
+                }
+                else
+                {
+                    command = "pwsh";
+                }
+
+                Terminal.ExecuteProcess(command, strCmdText);
+            }
+            catch (Exception error)
+            {
+                Terminal.ErrorWrite("Error: " + error.Message);
+            }
+            Console.WriteLine();
         }
     }
 
@@ -339,6 +429,7 @@ namespace remote
             Console.WriteLine("SYNTEX");
             Console.WriteLine("\t remote rdp help");
             Console.WriteLine("\t remote rdp connect <input: ip address>");
+            Console.WriteLine("\t remote rdp connect-name <input: hostname>");
             Console.WriteLine("");
         }
 
@@ -370,6 +461,40 @@ namespace remote
             Console.WriteLine();
 
         }
+
+        public void connect_name(string hostname)
+        {
+            var address = FortiGateClass.SelectAddressIP(hostname);
+            if (address == null) return;
+
+            Terminal.WriteText("::Connecting to RDP Desktop: " + address, ConsoleColor.Green, Console.BackgroundColor);
+            try
+            {
+                string strCmdText;
+                string command;
+
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    strCmdText = "/v:" + address;
+                    command = "mstsc.exe";
+                }
+                else
+                {
+                    strCmdText = address;
+                    command = "./rdp.sh";
+                }
+
+                Terminal.ExecuteProcess(command, strCmdText);
+            }
+            catch (Exception error)
+            {
+                Terminal.ErrorWrite("Error: " + error.Message);
+            }
+            Console.WriteLine();
+
+        }
+
+
     }
 
 
