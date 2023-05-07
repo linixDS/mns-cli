@@ -19,22 +19,60 @@
     {
         public static bool ChoiceYesNo()
         {
-            LabelChoiceYesNo:
-            var cki = Console.ReadKey();
-
-            if (cki.KeyChar != 'Y' &&
-                cki.KeyChar != 'y' &&
-                cki.KeyChar != 'n' &&
-                cki.KeyChar != 'N')
+            try
             {
-                Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
-                goto LabelChoiceYesNo;
+
+                LabelChoiceYesNo:
+                var cki = Console.ReadKey();
+                if (cki.KeyChar != 'Y' &&
+                    cki.KeyChar != 'y' &&
+                    cki.KeyChar != 'n' &&
+                    cki.KeyChar != 'N')
+                {
+                    Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
+                    goto LabelChoiceYesNo;
+                }
+
+                Console.WriteLine();
+                if (cki.KeyChar == 'Y' || cki.KeyChar == 'y')
+                    return true;
+                else
+                    return false;
+            
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
+        public static int Number(string title, int min, int max)
+        {
+            LabelChoiceSelect:
+
+            Console.Write("{0}:\t", title);
+            var posX = Console.CursorLeft;
+            Console.Write("                  ");
+            Console.SetCursorPosition(posX, Console.CursorTop);
+            var input = Console.ReadLine();
+
+
+            int choice;
+            if (!int.TryParse(input, out choice))
+            {
+                Console.SetCursorPosition(0, Console.CursorTop - 1);
+                goto LabelChoiceSelect;
             }
 
-            if (cki.KeyChar == 'Y' || cki.KeyChar == 'y')
-                return true;
-            else
-                return false;
+            if (choice < min || choice > max)
+            {
+                Console.SetCursorPosition(0, Console.CursorTop - 1);
+                goto LabelChoiceSelect;
+            }
+
+
+            return choice;
         }
 
         public static string ChoiceList(List<ListValue> values, string title, bool showValue = true)
@@ -121,7 +159,19 @@
             Console.BackgroundColor = currentBackground;
         }
         
+        public static void WriteText2(string message, ConsoleColor fg, ConsoleColor bg)
+        {
+            ConsoleColor currentBackground = Console.BackgroundColor;
+            ConsoleColor currentForeground = Console.ForegroundColor;
 
+            Console.ForegroundColor = fg;
+            Console.BackgroundColor = bg;
+
+            Console.Write(message);
+
+            Console.ForegroundColor = currentForeground;
+            Console.BackgroundColor = currentBackground;
+        }
     
 
         public static void ErrorWrite(string message)
@@ -129,9 +179,25 @@
             Terminal.WriteText(message, ConsoleColor.Red, Console.BackgroundColor, true);
         }
 
+        public static void WarnWrite(string message)
+        {
+            Terminal.WriteText(message, ConsoleColor.Yellow, Console.BackgroundColor, true);
+        }
+
+        public static void SuccessWrite(string message)
+        {
+            Terminal.WriteText(message, ConsoleColor.Green, Console.BackgroundColor, true);
+        }
+
+
         public static void ColorWrite(string text, ConsoleColor color)
         {
             Terminal.WriteText(text, color, Console.BackgroundColor, true);
+        }
+
+        public static void ColorWrite2(string text, ConsoleColor color)
+        {
+            Terminal.WriteText2(text, color, Console.BackgroundColor);
         }
 
     }
