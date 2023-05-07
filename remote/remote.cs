@@ -297,7 +297,7 @@ namespace remote
                     command = "./vnc.sh";
                 }
 
-                Terminal.ExecuteProcess(command, strCmdText);
+                Terminal.ExecuteProcess(command, strCmdText, false);
             }
             catch (Exception error)
             {
@@ -329,7 +329,7 @@ namespace remote
                     command = "./vnc.sh";
                 }
 
-                Terminal.ExecuteProcess(command, strCmdText);
+                Terminal.ExecuteProcess(command, strCmdText, false);
             }
             catch (Exception error)
             {
@@ -454,7 +454,7 @@ public class PSSESSIONCLASS
                     command = "./rdp.sh";
                 }
 
-                Terminal.ExecuteProcess(command, strCmdText);
+                Terminal.ExecuteProcess(command, strCmdText,false);
             }
             catch (Exception error)
             {
@@ -486,7 +486,7 @@ public class PSSESSIONCLASS
                     command = "./rdp.sh";
                 }
 
-                Terminal.ExecuteProcess(command, strCmdText);
+                Terminal.ExecuteProcess(command, strCmdText,false);
             }
             catch (Exception error)
             {

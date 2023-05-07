@@ -56,6 +56,14 @@ namespace network
             Organization = String.Empty;
             AS = String.Empty;
         }
+
+        public string GetLinkLocation()
+        {
+            var strLat = Lat.ToString().Replace(',','.');
+            var strLon = Lon.ToString().Replace(',', '.'); ;
+        
+            return string.Format("https://www.google.com/maps/search/?api=1&query={0},{1}", strLat, strLon);
+        }
     }
 
 

@@ -46,7 +46,29 @@ namespace network
             Console.WriteLine("");
             Console.WriteLine("SYNTEX");
             Console.WriteLine("\t network geoip search <input: ip address/hostname>");
+            Console.WriteLine("\t network geoip show <input: ip address/hostname>");
             Console.WriteLine("");
+        }
+
+
+        private GeoIPData SendGeoIp(string value)
+        {
+            Terminal.WriteText("::Searching IP address " + value, ConsoleColor.Green, Console.BackgroundColor);
+            var client = new IPClientApi();
+            var result = client.SearchIP(value).Result;
+            if (result == null)
+            {
+                Terminal.ErrorWrite(client.LastError);
+                return null;
+            }
+
+            if (result.Status.Contains("fail"))
+            {
+                Terminal.ErrorWrite("No found !");
+                return null;
+            }
+
+            return result;
         }
 
         public void search(string value)
@@ -57,18 +79,9 @@ namespace network
                 return;
             }
 
-            Terminal.WriteText("::Searching IP address " + value, ConsoleColor.Green, Console.BackgroundColor);
-            var client = new IPClientApi();
-            var result = client.SearchIP(value).Result;
+            var result = SendGeoIp(value);
             if (result == null)
             {
-                Terminal.ErrorWrite(client.LastError);
-                return;
-            }
-
-            if (result.Status.Contains("fail"))
-            {
-                Terminal.ErrorWrite("No found !");
                 return;
             }
 
@@ -83,8 +96,38 @@ namespace network
             Terminal.WriteText(result.ISP, ConsoleColor.Yellow, Console.BackgroundColor);
             Console.Write("AS     : ");
             Terminal.WriteText(result.AS, ConsoleColor.Yellow, Console.BackgroundColor);
+            Console.Write("Map    : ");
+            Terminal.WriteText(result.GetLinkLocation(), ConsoleColor.Yellow, Console.BackgroundColor);
             Console.WriteLine("");
         }
+
+        public void show(string value)
+        {
+            if (value == null)
+            {
+                Terminal.ErrorWrite("Error: Incorrect value!");
+                return;
+            }
+
+            var result = SendGeoIp(value);
+            if (result == null) return;
+
+            var link = result.GetLinkLocation();
+
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                Terminal.ExecuteProcess("explorer.exe", link, false);
+            }
+            else
+            {
+                Terminal.ExecuteProcess("xdg-open", link, false);
+            }
+
+            Console.WriteLine("");
+        }
+
+
     }
 
 
@@ -114,7 +157,7 @@ namespace network
             }
 
             string strCmdText;
-            strCmdText = value; ;
+            strCmdText = value;
 
             Terminal.WriteText("::Send ping to host " + value, ConsoleColor.Green, Console.BackgroundColor);
 
