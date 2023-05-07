@@ -1,5 +1,19 @@
 ﻿namespace Core
 {
+    public class ListValue
+    {
+        public string Text { get; set; }
+        public string Value { get; set; }
+
+
+
+        public ListValue(string text, string value)
+        {
+            Text = text;
+            Value = value;
+        }
+    }
+
 
     public class Input
     {
@@ -23,13 +37,16 @@
                 return false;
         }
 
-        public static string ChoiceList(List<string> list, string title)
+        public static string ChoiceList(List<ListValue> values, string title, bool showValue = true)
         {
             Console.WriteLine(title);
             var idx = 1;
-            foreach (var txt in list)
+            foreach (var txt in values)
             {
-                Console.WriteLine("   {0,-3} {1}", idx.ToString() + ".", list[idx - 1]);
+                if (showValue)
+                    Console.WriteLine("   {0,-3} {1,-20} {2}", idx.ToString() + ".", values[idx - 1].Text, values[idx - 1].Value);
+                else
+                    Console.WriteLine("   {0,-3} {1,20}", idx.ToString() + ".", values[idx - 1].Text);
                 idx++;
             }
             Console.WriteLine();
@@ -37,7 +54,7 @@
 
             LabelChoiceSelect:
 
-            Console.Write("Choice [1-{0}]:\t", list.Count);
+            Console.Write("Choice [1-{0}]:\t", values.Count);
             var posX = Console.CursorLeft;
             Console.Write("                  ");
             Console.SetCursorPosition(posX, Console.CursorTop);
@@ -51,14 +68,14 @@
                 goto LabelChoiceSelect;
             }
 
-            if (choice < 1 || choice > list.Count)
+            if (choice < 1 || choice > values.Count)
             {
                 Console.SetCursorPosition(0, Console.CursorTop - 1);
                 goto LabelChoiceSelect;
             }
 
 
-            return list[choice - 1];
+            return values[choice - 1].Value;
         }
     }
 

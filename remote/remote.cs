@@ -54,6 +54,7 @@ namespace remote
         }
     }
 
+
     internal class FortiGateClass
     {
         private List<FortiRegisterDevice> GetData()
@@ -86,23 +87,24 @@ namespace remote
             }
         }
 
-        public List<string> GetAddressIP(string value)
+        public List<ListValue> GetAddressIP(string value)
         {
-            List<string> result = new List<string>();
+            List<ListValue> result = new List<ListValue>();
             try
             {
                 List<FortiRegisterDevice> results = GetData();
                 if (results == null)
                 {
-                    Environment.Exit(-1);
-                    return result;
+
+                    return null;
                 }
 
                 foreach (var data in results)
                 {
                     if (data.Hostname.Contains(value))
                     {
-                        result.Add(data.IP);
+
+                        result.Add(new ListValue(data.Hostname, data.IP));
                     }
                 }
                 return result;
@@ -111,7 +113,7 @@ namespace remote
             {
                 Environment.Exit(-1);
             }
-            return result;
+            return null;
         }
 
         public static string SelectAddressIP(string hostname)
@@ -129,13 +131,13 @@ namespace remote
 
             if (list.Count > 1)
             {
-                list.Add("Cancel");
+                list.Add(new ListValue("Cancel","Cancel"));
                 address = Input.ChoiceList(list, "Select address IP: ");
                 if (address == "Cancel") return null;
             }
             else
             {
-                address = list[0];
+                address = list[0].Value;
             }
 
             return address;
