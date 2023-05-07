@@ -106,14 +106,7 @@ if [ "$1" == "build" ] ; then
     echo "----------------------------------------------"
     echo "::Compiling library mikrotik.dll"
     echo "----------------------------------------------"
-    cd ./runtime/
-    dotnet build
-    cd ..
-
-    echo "----------------------------------------------"
-    echo "::Compiling program mns-cli"
-    echo "----------------------------------------------"
-    cd ./mns-cli/
+    cd ./mikrotik/
     dotnet build
     cd ..
 
@@ -142,6 +135,13 @@ if [ "$1" == "build" ] ; then
     echo "Compiling module module.dll"
     echo "----------------------------------------------"
     cd ./module/
+    dotnet build
+    cd ..
+
+    echo "----------------------------------------------"
+    echo "::Compiling program mns-cli"
+    echo "----------------------------------------------"
+    cd ./mns-cli/
     dotnet build
     cd ..
 

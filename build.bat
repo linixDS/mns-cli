@@ -84,13 +84,6 @@ if "%1" == "build" (
     cd ..
 
     echo "----------------------------------------------"
-    echo "::Compiling program mns-cli"
-    echo "----------------------------------------------"
-    cd .\mns-cli\
-    dotnet build
-    cd ..
-
-    echo "----------------------------------------------"
     echo "::Compiling module network.dll"
     echo "----------------------------------------------"
     cd .\network\
@@ -115,6 +108,13 @@ if "%1" == "build" (
     echo "::Compiling module module.dll"
     echo "----------------------------------------------"
     cd .\module\
+    dotnet build
+    cd ..
+
+    echo "----------------------------------------------"
+    echo "::Compiling program mns-cli"
+    echo "----------------------------------------------"
+    cd .\mns-cli\
     dotnet build
     cd ..
 

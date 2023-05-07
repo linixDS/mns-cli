@@ -29,15 +29,28 @@ namespace CacheManagment
             Enabled = true;
             LiveTimeSec = time;
         }
+
+        public string ConvertToMinutes()
+        {
+            if (this.LiveTimeSec >= 60)
+            {
+                var minutes = (this.LiveTimeSec / 60);
+                var secundes = (this.LiveTimeSec % 60);
+
+                return string.Format("{0}.{1} minutes", minutes, secundes);
+            }
+            else
+                return string.Format("{0} sec", this.LiveTimeSec);
+        }
     }
 
     public class DataCache
     {
-        public List<CacheProperty> Item { get; set; }
+        public List<CacheProperty> Items { get; set; }
 
         public DataCache()
         {
-            Item = new List<CacheProperty>();
+            Items = new List<CacheProperty>();
         }
 
 
@@ -52,6 +65,26 @@ namespace CacheManagment
             return current;
         }
 
+        public bool Clear()
+        {
+            var path = GetFullName();
+            try
+            {
+                System.IO.DirectoryInfo di = new DirectoryInfo(path);
+
+                foreach (FileInfo file in di.GetFiles())
+                {
+                    file.Delete();
+                }
+
+                return true;
+            }
+            catch { throw; }
+
+            return false;
+
+        }
+
         public bool LoadConfig()
         {
             try
@@ -62,14 +95,14 @@ namespace CacheManagment
 
                 var data = JsonSerializer.Deserialize<List<CacheProperty>>(text);
                 if (data == null) return false;
-                Item = data;
+                Items = data;
 
                 return true;
 
             }
             catch (Exception error)
             {
-                Console.WriteLine("Error: " + error.Message);
+                throw;
                 return false;
             }
         }
@@ -79,7 +112,7 @@ namespace CacheManagment
             try
             {
                 var path = GetFullName() + Path.DirectorySeparatorChar + "cache.db";
-                var data = JsonSerializer.Serialize(this.Item);
+                var data = JsonSerializer.Serialize(this.Items);
                 using (StreamWriter outputFile = new StreamWriter(path, false))
                 {
                     outputFile.WriteLine(data);
@@ -88,7 +121,7 @@ namespace CacheManagment
             }
             catch (Exception error)
             {
-                Console.WriteLine("Error: " + error.Message);
+                throw;
                 return false;
             }
         }
@@ -99,13 +132,14 @@ namespace CacheManagment
         {
             try
             {
-                foreach (var data in Item)
+                foreach (var data in Items)
                 {
                     if (data.Name == name) return data;
                 }
             }
             catch (Exception)
             {
+                throw;
             }
 
             return null;
@@ -141,10 +175,34 @@ namespace CacheManagment
             }
             catch (Exception)
             {
+                throw;
                 return true;
             }
         }
 
+        public bool RemoveCacheFile(string name)
+        {
+            var item = Find(name);
+            if (item == null) return false;
+
+            var path = GetFullName() + Path.DirectorySeparatorChar + item.FileName;
+            try
+            {
+                File.Delete(path);
+                if (this.Items.Remove(item))
+                {
+                    SaveConfig();
+                    return true;
+                }
+                else
+                    return false;
+            }
+            catch (Exception)
+            {
+                throw;
+                return false;
+            }
+        }
 
         public string GetCacheValue(CacheProperty item)
         {
@@ -158,6 +216,7 @@ namespace CacheManagment
             }
             catch (Exception)
             {
+                throw;
                 return null;
             }
         }
@@ -176,6 +235,7 @@ namespace CacheManagment
             }
             catch (Exception)
             {
+                throw;
             }
         }
 
@@ -185,12 +245,13 @@ namespace CacheManagment
 
             try
             {
-                Item.Add(item);
+                Items.Add(item);
                 SaveConfig();
                 UpdateCacheValue(item, value);
             }
             catch (Exception)
             {
+                throw;
             }
         }
     }
