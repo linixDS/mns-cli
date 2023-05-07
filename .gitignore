@@ -1,5 +1,9 @@
 .vs/
 
+cache/bin/
+cache/obj/
+cache/.vs/
+
 remote/bin/
 remote/obj/
 remote/.vs/
