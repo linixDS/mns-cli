@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using Core;
 
+
 namespace Runtime
 {
     public class Route
@@ -13,6 +14,8 @@ namespace Runtime
         protected string MethodName = null;
 
         protected object[] inputValues = null;
+
+        protected LibraryManager libSystem;
 
         public Route()
         {
@@ -24,6 +27,9 @@ namespace Runtime
             this.ClassName = className.ToUpper() + "CLASS";
             if (methodName != null)
                 this.MethodName = methodName.ToLower();
+
+            libSystem = new LibraryManager();
+            libSystem.Loaded();
         }
 
 
@@ -49,11 +55,33 @@ namespace Runtime
 
         }
 
+        private bool CheckDependences(string moduleName)
+        {
+            try
+            {
+                var path = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + "modules" + Path.DirectorySeparatorChar + moduleName;
+                if (!Directory.Exists(path))
+                {
+                    Terminal.ErrorWrite("No found "+path);
+                    return false;
+                }
+
+                var list = libSystem.GetFilesModules(path);
+                return libSystem.IsComparisonDependens(list);
+
+            }
+            catch (Exception error)
+            {
+                Terminal.ErrorWrite("Error module: " + error.Message);
+                return false;
+            }
+        }
 
         private Assembly LoadModule(string moduleName)
         {
             try
             {
+
                 var path = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + "modules" +
                                 Path.DirectorySeparatorChar + moduleName +
                                 Path.DirectorySeparatorChar + moduleName + ".dll";
@@ -128,6 +156,9 @@ namespace Runtime
             {
                 module = LoadModule(ModuleName);
                 if (module == null) return -1;
+
+                if (!CheckDependences(ModuleName)) return -2;
+
                 SetRootModuleDirectory(ModuleName);
             }
             catch (Exception error)

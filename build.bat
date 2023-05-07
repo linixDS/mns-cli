@@ -4,6 +4,12 @@ if "%1" == "install" (
      if not exist ".\build" mkdir .\build
 
      if not exist ".\build\modules" mkdir .\build\modules
+     if not exist ".\build\.cache" mkdir .\build\.cache
+
+     if not exist ".\build\modules\cache" mkdir .\build\modules\cache
+     copy .\cache\bin\Debug\net7.0\cache.dll .\.\build\modules\cache\
+     copy .\cache\package.json .\.\build\modules\cache\
+     copy .\cache\bin\Debug\net7.0\core.dll .\.\build\modules\cache\
 
 
      if not exist ".\build\modules\fortigate" mkdir .\build\modules\fortigate
@@ -60,6 +66,13 @@ if "%1" == "build" (
     echo "::Compiling library runtime.dll"
     echo "----------------------------------------------"
     cd .\runtime\
+    dotnet build
+    cd ..
+
+    echo "----------------------------------------------"
+    echo "::Compiling library cache.dll"
+    echo "----------------------------------------------"
+    cd .\cache\
     dotnet build
     cd ..
 

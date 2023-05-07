@@ -9,6 +9,19 @@ if [ "$1" == "install" ] ; then
          mkdir ./build/modules
     fi
 
+    if [ ! -d "./build/.cache" ]; then
+         mkdir ./build/.cache
+    fi
+
+    if [ ! -d "./build/modules/cache" ]; then
+         mkdir ./build/modules/cache
+    fi
+
+     cp ./cache/bin/Debug/net7.0/cache.dll ././build/modules/cache/
+     cp ./cache/package.json ././build/modules/cache/
+     cp ./cache/bin/Debug/net7.0/core.dll ././build/modules/cache/
+
+
     if [ ! -d "./build/modules/fortigate" ]; then
          mkdir ./build/modules/fortigate
     fi
@@ -80,6 +93,13 @@ if [ "$1" == "build" ] ; then
     echo "::Compiling library runtime.dll"
     echo "----------------------------------------------"
     cd ./runtime/
+    dotnet build
+    cd ..
+
+    echo "----------------------------------------------"
+    echo "::Compiling library cache.dll"
+    echo "----------------------------------------------"
+    cd ./cache/
     dotnet build
     cd ..
 

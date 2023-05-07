@@ -1,7 +1,9 @@
 ﻿using Core;
+using System.Reflection;
 
 namespace Runtime
 {
+
     public class ParserCommandLine
     {
         public ParserCommandLine(string[] args)
@@ -10,7 +12,8 @@ namespace Runtime
             {
                 if (args.Length == 0)
                 {
-                    Console.WriteLine("Network Managment Servces - Client Terminal v0.1");
+
+                    Console.WriteLine("Network Managment Servces - Client Terminal v"+Utils.GetVersion());
                     Console.WriteLine("Copyrigh(c) 2023 by Dariusz Marcisz");
                     Console.WriteLine("");
                     return;
@@ -34,6 +37,8 @@ namespace Runtime
                 }
                 else
                     moduleName = args[0];
+
+
 
 
 
