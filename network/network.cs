@@ -20,12 +20,15 @@ namespace network
             Console.WriteLine("");
             Console.WriteLine("MODULES");
             Console.WriteLine("\t network help");
-            Console.WriteLine("\t network module");
+
             Console.WriteLine("\t network geoip");
             Console.WriteLine("\t network ip");
             Console.WriteLine("\t network tool");
-            Console.WriteLine("\t network interface");
-            Console.WriteLine("\t network wlan");
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                Console.WriteLine("\t network interface");
+                Console.WriteLine("\t network wlan");
+            }
             Console.WriteLine("");
         }
     }
@@ -42,7 +45,7 @@ namespace network
             Console.WriteLine("\tGet information in address ip.");
             Console.WriteLine("");
             Console.WriteLine("SYNTEX");
-            Console.WriteLine("\t network geoip search <input: ip address>");
+            Console.WriteLine("\t network geoip search <input: ip address/hostname>");
             Console.WriteLine("");
         }
 
@@ -169,10 +172,6 @@ namespace network
             Console.WriteLine("");
             Console.WriteLine("SYNTEX");
             Console.WriteLine("\t network ip show");
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                        Console.WriteLine("\t network ip list");
-            }
             Console.WriteLine("\t network ip list");
             Console.WriteLine("");
         }
@@ -204,9 +203,19 @@ namespace network
 
         public void list()
         {
+            Terminal.WriteText("::List all interfaces: ", ConsoleColor.Green, Console.BackgroundColor);
             string strCmdText;
             strCmdText = "/all ";
-            Terminal.ExecuteProcess("ipconfig.exe", strCmdText);
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                Terminal.ExecuteProcess("ipconfig.exe", strCmdText);
+            }
+            else
+            {
+                Terminal.ExecuteProcess("ifconfig", "");
+            }
+            Console.WriteLine();
         }
 
     }
