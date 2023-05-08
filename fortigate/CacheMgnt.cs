@@ -249,8 +249,9 @@ namespace CacheManagment
                 SaveConfig();
                 UpdateCacheValue(item, value);
             }
-            catch (Exception)
+            catch (Exception error)
             {
+                  Console.WriteLine("Error (save): "+ error.Message);
                 throw;
             }
         }

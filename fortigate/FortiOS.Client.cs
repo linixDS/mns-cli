@@ -91,6 +91,14 @@ namespace FortiOS.Client
 
                 Debug.WriteLine(" -> RESPONDE CODE:" + (int)response.StatusCode);
                 var json = await response.Content.ReadAsStringAsync();
+
+                if ((int)response.StatusCode == 200)
+                {
+                    if (cacheData == null)
+                        cache.SaveCacheValue(new CacheProperty(url), json);
+                    else
+                        cache.UpdateCacheValue(cacheData, json);
+                }
                 
                 res = new FortiRespondeRestApi(response.StatusCode, json);
                 return res;

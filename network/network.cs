@@ -1,5 +1,6 @@
 ﻿using Core;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
@@ -117,7 +118,7 @@ namespace network
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                Terminal.ExecuteProcess("explorer.exe", link, false);
+                 Process.Start(new ProcessStartInfo { FileName = link, UseShellExecute = true });
             }
             else
             {
