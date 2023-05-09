@@ -27,8 +27,8 @@ namespace mikrotik
 
             Console.WriteLine("\t mikrotik caps config <input: profile>");
 
-            Console.WriteLine("\t mikrotik caps wifi-clients <input: profile>");
-            Console.WriteLine("\t mikrotik caps search-client <input1: value> <input2: profile>");
+            Console.WriteLine("\t mikrotik caps clients <input: profile>");
+            Console.WriteLine("\t mikrotik caps search <input1: value> <input2: profile>");
 
             Console.WriteLine("\t mikrotik caps interfaces <input: profile>");
             Console.WriteLine("\t mikrotik caps search-interfaces <input1: value> <input2: profile>");
@@ -70,7 +70,7 @@ namespace mikrotik
 
             if (info.Comment.Length > 0)
                 Terminal.WriteText(" ;; " + info.Comment, ConsoleColor.Cyan, Console.BackgroundColor);
-            Console.WriteLine(" {0,-30} {1,-20} {2,-18} {3,-5} {4,-25} {5,-25} {6,-20} {7,-20}",
+            Console.WriteLine("{0,-55} {1,-20} {2,-18} {3,-5} {4,-25} {5,-25} {6,-20} {7,-20}",
                                 info.Interface,
                                 info.SSID,
                                 info.MAC,
@@ -108,7 +108,7 @@ namespace mikrotik
 
                 Console.WriteLine();
 
-                string header1 = String.Format(" {0,-30} {1,-20} {2,-18} {3,-5} {4,-25} {5,-25} {6,-20} {7,-20}",
+                string header1 = String.Format("{0,-55} {1,-20} {2,-18} {3,-5} {4,-25} {5,-25} {6,-20} {7,-20}",
                                                 "Interface",
                                                 "SSID",
                                                 "MAC Address",
@@ -117,15 +117,15 @@ namespace mikrotik
                                                 "Tx Rate",
                                                 "Uptime",
                                                 "Tx/Rx bytes");
-                string header2 = String.Format(" {0,-30} {1,-20} {2,-18} {3,-5} {4,-25} {5,-25} {6,-20} {7,-20}",
+                string header2 = String.Format("{0,-55} {1,-20} {2,-18} {3,-5} {4,-25} {5,-25} {6,-20} {7,-20}",
                                                 "--------------------",
                                                 "---------------",
-                                                "---------------",
+                                                "-----------------",
                                                 "-----",
                                                 "---------------",
-                                                "---------------",
-                                                "---------------",
-                                                "---------------");
+                                                "-----------------",
+                                                "-----------------",
+                                                "-----------------");
                                                 
                 Terminal.WriteText(header1, ConsoleColor.Yellow, Console.BackgroundColor);
                 Console.WriteLine(header2);
@@ -158,12 +158,12 @@ namespace mikrotik
         }
 
 
-        public void wifi_clients(string profileName)
+        public void clients(string profileName)
         {
             GetRegistrionTable(profileName, false, String.Empty);
         }
 
-        public void search_client(string value, string profileName)
+        public void search(string value, string profileName)
         {
             GetRegistrionTable(profileName, true, value);
         }
