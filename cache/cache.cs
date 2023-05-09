@@ -65,6 +65,7 @@ namespace cache
                     }
 
                     Console.WriteLine("{0,-3} {1,-18} {2,-45} {3}", status, item.ConvertToMinutes(), item.FileName, item.Name);
+                    status = "";
                 }
             }
             catch (Exception error)
