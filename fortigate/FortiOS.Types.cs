@@ -9,6 +9,139 @@ using System.Threading.Tasks;
 
 namespace FortiOS.Types
 {
+
+    /************************************************************************************************************
+     * LISTA ZDARZEŃ LOG TRAFFIC MEMORY  
+     ************************************************************************************************************/
+    public class FortiLogTraffic
+    {
+        [JsonPropertyName("date")]
+        public String date{ get; set; }
+
+        [JsonPropertyName("time")]
+        public String time{ get; set; }
+
+        [JsonPropertyName("type")]
+        public String type{ get; set; }    
+
+        [JsonPropertyName("subtype")]
+        public String subtype{ get; set; }  
+
+ 
+        [JsonPropertyName("srcip")]
+        public String srcip{ get; set; }   
+
+        [JsonPropertyName("srcintf")]
+        public String srcintf{ get; set; }        
+
+        [JsonPropertyName("srccountry")]
+        public String srccountry{ get; set; }    
+
+        [JsonPropertyName("dstip")]
+        public String dstip{ get; set; }   
+
+        [JsonPropertyName("dstintf")]
+        public String dstintf{ get; set; }        
+
+        [JsonPropertyName("dstcountry")]
+        public String dstcountry{ get; set; }    
+
+
+        [JsonPropertyName("action")]
+        public String action{ get; set; }    
+
+
+        [JsonPropertyName("policyname")]
+        public String policyname{ get; set; }  
+
+
+        [JsonPropertyName("service")]
+        public String service{ get; set; }         
+
+        [JsonPropertyName("sendbyte")]
+        public ulong sendbyte{ get; set; }
+        [JsonPropertyName("rcvdbyte")]
+        public ulong rcvdbyte{ get; set; }        
+
+        public FortiLogTraffic()
+        {
+            this.date = "";
+            this.time = "";
+            this.type = "";
+            this.subtype = "";
+            this.srccountry = "";
+            this.srcintf = "";
+            this.srcip = "";
+            this.dstcountry = "";
+            this.dstintf = "";
+            this.dstip = "";
+            this.action = "";
+            this.action = "";
+            this.policyname = "";
+            this.service = "";
+            this.sendbyte = 0;
+            this.rcvdbyte = 0;
+        }         
+    }
+
+
+
+    public class FortiResultLogTraffic
+    {
+        [JsonPropertyName("http_method")]
+        public String Method { get; set; }
+
+        [JsonPropertyName("results")]
+        public List<FortiLogTraffic> logs { get; set; }
+
+        [JsonPropertyName("vdom")]
+        public String vdom { get; set; }
+
+        [JsonPropertyName("device")]
+        public String device { get; set; }
+        [JsonPropertyName("category")]
+        public String category { get; set; }  
+
+
+        [JsonPropertyName("subcategory")]
+        public String subcategory { get; set; }  
+
+        [JsonPropertyName("start")]
+        public int start { get; set; }
+
+        [JsonPropertyName("rows")]
+        public int rows { get; set; }
+
+        [JsonPropertyName("session_id")]
+        public int session_id { get; set; }
+
+        [JsonPropertyName("completed")]
+        public int completed { get; set; }
+
+        [JsonPropertyName("total_lines")]
+        public int total_lines { get; set; }
+
+        [JsonPropertyName("now")]
+        public long now { get; set; }        
+
+        [JsonPropertyName("status")]
+        public String status { get; set; }
+
+        [JsonPropertyName("version")]
+        public String version { get; set; }
+
+        [JsonPropertyName("build")]
+        public int build { get; set; }
+
+
+
+        public FortiResultLogTraffic()
+        {
+            this.Method = "";
+            this.logs = new List<FortiLogTraffic>();
+        }
+    }
+
     /************************************************************************************************************
      * LISTA WSZYSTKICH WYKRYTYCH URZĄDZEŃ  
      ************************************************************************************************************/

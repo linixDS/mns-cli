@@ -113,6 +113,159 @@ namespace FortiOS.Client
             return null;
         }
 
+
+       /*---------------------------------------------------------------------------------------------------------------
+         *GetLogTraffic
+         *---------------------------------------------------------------------------------------------------------------*/
+
+        public async Task<(bool,object)> GetLogTrafficAsync(string filter = "")
+        {
+
+            string url = String.Format("{0}log/memory/traffic/forward?access_token={1}{2}", this.Url, this.TokenAPI, filter);
+  
+            LastError = "";
+            try
+            {
+                FortiRespondeRestApi responde = await SendGet(url);
+                if (responde == null) return (false, null);
+                
+                if ((int)responde.statusCode == 200)
+                {
+                    
+                    var data = JsonSerializer.Deserialize<FortiResultLogTraffic>(responde.data.ToString());
+
+                    if (OnEventResponde != null && callEvents)
+                    {
+                        OnEventResponde((int)responde.statusCode, data);
+                    }
+
+                    if (OnEventSuccess != null && callEvents)
+                    {
+                        OnEventSuccess(data);
+                    }
+
+                    return (true, data);
+                }
+                    else
+                {
+                    LastError = String.Format("Error code {0}: {1}",(int)responde.statusCode, responde.statusCode.ToString());
+                    if (OnEventError != null && callEvents)
+                        OnEventError(LastError);
+                    return (false, null);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Error: " + e.Message);
+                LastError = e.Message;
+                if (OnEventError != null && callEvents)
+                    OnEventError(e.Message);
+            }
+
+            return (false,null);
+        }
+
+        public async Task<(bool,string)> GetLogTrafficFormatJsonAsync(string filter = "")
+        {
+
+            string url = String.Format("{0}log/memory/traffic/forward?access_token={1}{2}", this.Url, this.TokenAPI, filter);
+  
+            LastError = "";
+            try
+            {
+                FortiRespondeRestApi responde = await SendGet(url);
+                if (responde == null) return (false, null);
+                
+                if ((int)responde.statusCode == 200)
+                {
+                    
+                    var data = JsonSerializer.Deserialize<FortiResultLogTraffic>(responde.data.ToString());
+
+                    return (true, responde.data.ToString());
+                }
+                    else
+                {
+                    LastError = String.Format("Error code {0}: {1}",(int)responde.statusCode, responde.statusCode.ToString());
+                    if (OnEventError != null && callEvents)
+                        OnEventError(LastError);
+                    return (false, null);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Error: " + e.Message);
+                LastError = e.Message;
+                if (OnEventError != null && callEvents)
+                    OnEventError(e.Message);
+            }
+
+            return (false,null);
+        }        
+
+
+        public List<FortiLogTraffic> GetLogTraffic(String filter = "")
+        {
+            bool res = false;
+            object data;
+            try
+            {
+                callEvents = false;
+
+                var t = Task.Run(() =>
+                {
+                    return GetLogTrafficAsync(filter);
+                });
+                (res, data) = t.Result;
+
+                callEvents = true;
+                if (res)
+                {
+                    FortiResultLogTraffic result = (FortiResultLogTraffic)data;
+                    return result.logs;
+                }
+            }
+            catch (Exception e)
+            {
+                callEvents = true;
+                LastError = "Error:" + e.Message;
+            }
+
+            return null;
+        }
+
+        public String GetLogTrafficFormatJson(String filter = "")
+        {
+            bool res = false;
+            object data;
+            try
+            {
+                callEvents = false;
+
+                var t = Task.Run(() =>
+                {
+                    return GetLogTrafficFormatJsonAsync(filter);
+                });
+                (res, data) = t.Result;
+
+                callEvents = true;
+                if (res)
+                {
+                    string result = (string)data;
+                    return result;
+                }
+            }
+            catch (Exception e)
+            {
+                callEvents = true;
+                LastError = "Error:" + e.Message;
+            }
+
+            return null;
+        }        
+
+
+
+
         /*---------------------------------------------------------------------------------------------------------------
          *GetAllDevicesFromNetworkAsync
          *---------------------------------------------------------------------------------------------------------------*/

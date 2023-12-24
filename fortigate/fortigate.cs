@@ -24,6 +24,7 @@ namespace fortigate
             Console.WriteLine("\t fortigate devices");
             Console.WriteLine("\t fortigate vpn");
             Console.WriteLine("\t fortigate profile");
+            Console.WriteLine("\t fortigate log");
             Console.WriteLine("");
         }
     }
@@ -782,4 +783,421 @@ namespace fortigate
             Console.WriteLine();
         }
     }
+
+
+
+   public class LOGCLASS
+    {
+        public void help()
+        {
+            Console.Clear();
+            Console.WriteLine("NAME");
+            Console.WriteLine("\t FortiGate.LOG");
+            Console.WriteLine("");
+            Console.WriteLine("SHORT DESCRIPTION");
+            Console.WriteLine("");
+            Console.WriteLine("SYNTEX");
+            Console.WriteLine("\t fortigate log help");
+            Console.WriteLine("\t fortigate log show <input: profile>");
+            Console.WriteLine("\t fortigate log save-json <input: profile>");
+            Console.WriteLine("\t fortigate log accept <input: profile>");
+            Console.WriteLine("\t fortigate log deny <input: profile>");
+            Console.WriteLine("\t fortigate log srcip <input1: value> <input2: profile>");
+            Console.WriteLine("\t fortigate log dstip <input1: value> <input2: profile>");
+            Console.WriteLine("\t fortigate log service <input1: value> <input2: profile>");
+            Console.WriteLine("\t fortigate log country <input1: value> <input2: profile>");
+            Console.WriteLine("\t fortigate log intf <input1: value> <input2: profile>");
+            Console.WriteLine("\t fortigate log policy <input1: value> <input2: profile>");
+            Console.WriteLine("\t fortigate log filter <input1: field> <input2: value> <input3: profile>");
+            Console.WriteLine("");
+        }
+
+        private List<FortiLogTraffic> GetData(string profileName, string filter = "")
+        {
+            try
+            {
+                var profile = new PROFILECLASS();
+                var config = profile.load(profileName);
+                if (config == null)
+                {
+                    Terminal.ErrorWrite("No found profile.");
+                    return null;
+                }
+
+                var client = new FortiClient(config.Address, config.Port, config.Token);
+                List<FortiLogTraffic> result = client.GetLogTraffic(filter);
+                if (result == null)
+                {
+                    Terminal.ErrorWrite(client.GetLastError());
+                    return null;
+                }
+
+                return result;
+            }
+            catch (Exception error)
+            {
+                Terminal.ErrorWrite(error.Message);
+                return null;
+            }
+        }
+
+        private String GetJson(string profileName, string filter = "")
+        {
+            try
+            {
+                var profile = new PROFILECLASS();
+                var config = profile.load(profileName);
+                if (config == null)
+                {
+                    Terminal.ErrorWrite("No found profile.");
+                    return null;
+                }
+
+                var client = new FortiClient(config.Address, config.Port, config.Token);
+                String result = client.GetLogTrafficFormatJson(filter);
+                if (result == null)
+                {
+                    Terminal.ErrorWrite(client.GetLastError());
+                    return null;
+                }
+
+                return result;
+            }
+            catch (Exception error)
+            {
+                Terminal.ErrorWrite(error.Message);
+                return null;
+            }
+        }        
+
+        private void header()
+        {
+            string header1 = String.Format("{0,-12} {1,-9} {2,-18} {3,-18} {4,-12} {5,-20} {6,-20} {7,-35} {8,-25}",   "Date",        "Time",     "Src IP",          "Dest IP",      "Service",     "Input",            "Output",           "Policy",       "Country");
+            string header2 = String.Format("{0,-12} {1,-9} {2,-18} {3,-18} {4,-12} {5,-20} {6,-20} {7,-35} {8,-25}",   "----------", "--------", "--------------", "--------------", "---------", "----------------", "----------------", "----------------", "----------------");
+
+            Terminal.WriteText(header1, ConsoleColor.Yellow, Console.BackgroundColor);
+            Console.WriteLine(header2);
+        }
+
+        private void print(FortiLogTraffic data)
+        {
+            var Country = String.Empty;
+
+            if (data.srcintf.Contains("wan"))
+                Country = data.srccountry;
+            else
+                Country = data.dstcountry;
+
+            if (data.action == "accept")
+                Console.ForegroundColor = ConsoleColor.Green;
+            else
+                if (data.action == "deny")
+                    Console.ForegroundColor = ConsoleColor.Red;
+                else
+                    Console.ForegroundColor = ConsoleColor.Gray;
+
+            Console.WriteLine("{0,-12} {1,-9} {2,-18} {3,-18} {4,-12} {5,-20} {6,-20} {7,-35} {8,-25}", data.date, data.time, data.srcip, data.dstip, data.service, data.srcintf.ToUpper(), data.dstintf.ToUpper(), data.policyname, Country);
+        }
+
+        public void srcip(string value, string profileName)
+        {
+            try
+            {
+                Terminal.WriteText("::Log traffic - srcip", ConsoleColor.Green, Console.BackgroundColor);
+                Console.WriteLine("Source IP: "+value);
+
+                String filter = "&filter=srcip=@"+value;
+
+                List<FortiLogTraffic> result = GetData(profileName, filter);
+                if (result == null) return;
+
+
+                this.header();
+
+                foreach (var data in result)
+                {
+                    this.print(data);
+                }
+            }
+            catch (Exception error)
+            {
+                Terminal.ErrorWrite(error.Message);
+            }
+            Console.WriteLine();
+        }
+
+        public void dstip(string value, string profileName)
+        {
+            try
+            {
+                Terminal.WriteText("::Log traffic - srcip", ConsoleColor.Green, Console.BackgroundColor);
+                Console.WriteLine("Dest IP: "+value);
+
+                String filter = "&filter=dstip=@"+value;
+
+                List<FortiLogTraffic> result = GetData(profileName, filter);
+                if (result == null) return;
+
+
+                this.header();
+
+                foreach (var data in result)
+                {
+                    this.print(data);
+                }
+            }
+            catch (Exception error)
+            {
+                Terminal.ErrorWrite(error.Message);
+            }
+            Console.WriteLine();
+        }
+
+        public void service(string value, string profileName)
+        {
+            try
+            {
+                Terminal.WriteText("::Log traffic - Service", ConsoleColor.Green, Console.BackgroundColor);
+                Console.WriteLine("Service name: "+value);
+
+                String filter = "&filter=service=@"+value;
+
+                List<FortiLogTraffic> result = GetData(profileName, filter);
+                if (result == null) return;
+
+
+                this.header();
+
+                foreach (var data in result)
+                {
+                    this.print(data);
+                }
+            }
+            catch (Exception error)
+            {
+                Terminal.ErrorWrite(error.Message);
+            }
+            Console.WriteLine();
+        }        
+
+        public void country(string value, string profileName)
+        {
+            try
+            {
+                Terminal.WriteText("::Log traffic - srcip", ConsoleColor.Green, Console.BackgroundColor);
+                Console.WriteLine("Filter country: "+value);
+
+                List<FortiLogTraffic> result = GetData(profileName);
+                if (result == null) return;
+
+
+                this.header();
+
+                foreach (var data in result)
+                {
+                    if ((data.srccountry.Contains(value)) || 
+                        (data.dstcountry.Contains(value)))
+                    {
+                        this.print(data);
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                Terminal.ErrorWrite(error.Message);
+            }
+            Console.WriteLine();
+        }
+
+        public void intf(string value, string profileName)
+        {
+            try
+            {
+                Terminal.WriteText("::Log traffic - srcip", ConsoleColor.Green, Console.BackgroundColor);
+                Console.WriteLine("Filter interface: "+value);
+
+                List<FortiLogTraffic> result = GetData(profileName);
+                if (result == null) return;
+
+
+                this.header();
+
+                foreach (var data in result)
+                {
+                    if ((data.srcintf.Contains(value)) || 
+                        (data.dstintf.Contains(value)))
+                    {
+                        this.print(data);
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                Terminal.ErrorWrite(error.Message);
+            }
+            Console.WriteLine();
+        } 
+
+        public void policy(string value, string profileName)
+        {
+            try
+            {
+                Terminal.WriteText("::Log traffic - srcip", ConsoleColor.Green, Console.BackgroundColor);
+                Console.WriteLine("Filter policy name: "+value);
+
+                List<FortiLogTraffic> result = GetData(profileName);
+                if (result == null) return;
+
+
+                this.header();
+
+                foreach (var data in result)
+                {
+                    if (data.policyname.Contains(value)) 
+                    {
+                        this.print(data);
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                Terminal.ErrorWrite(error.Message);
+            }
+            Console.WriteLine();
+        }
+
+      public void filter(string field, string value, string profileName)
+        {
+            try
+            {
+                Terminal.WriteText("::Log traffic - srcip", ConsoleColor.Green, Console.BackgroundColor);
+                Console.WriteLine("Filter query: "+field+"@"+value);
+
+                String _filter = "&filter="+field+"=@"+value;
+
+                List<FortiLogTraffic> result = GetData(profileName, _filter);
+                if (result == null) return;
+
+
+                this.header();
+
+                foreach (var data in result)
+                {
+                    this.print(data);
+                }
+            }
+            catch (Exception error)
+            {
+                Terminal.ErrorWrite(error.Message);
+            }
+            Console.WriteLine();
+        }                                   
+
+
+        public void accept(string profileName)
+        {
+            try
+            {
+                Terminal.WriteText("::Log traffic - Packet Accept", ConsoleColor.Green, Console.BackgroundColor);
+
+                String filter = "&filter=action=@accept";
+
+                List<FortiLogTraffic> result = GetData(profileName, filter);
+
+                if (result == null) return;
+
+
+                this.header();
+
+                foreach (var data in result)
+                {
+                    if (data.action == "accept")
+                    {
+                        this.print(data);
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                Terminal.ErrorWrite(error.Message);
+            }
+            Console.WriteLine();
+        }
+
+        public void deny(string profileName)
+        {
+            try
+            {
+                Terminal.WriteText("::Log traffic - Packet Deny", ConsoleColor.Green, Console.BackgroundColor);
+
+                String filter = "&filter=action=@deny";
+
+                List<FortiLogTraffic> result = GetData(profileName, filter);
+                if (result == null) return;
+
+
+                this.header();
+
+                foreach (var data in result)
+                {
+                    if (data.action == "deny")
+                    {
+                        this.print(data);
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                Terminal.ErrorWrite(error.Message);
+            }
+            Console.WriteLine();
+        } 
+        
+
+
+        public void save_json(string profileName)
+        {
+            try
+            {
+                Terminal.WriteText("::Log traffic - save json", ConsoleColor.Green, Console.BackgroundColor);
+
+                String result = GetJson(profileName, "");
+                if (result == null) return;
+
+                string name = "fortigate-query-"+DateTime.Now.ToString()+".json";
+                File.WriteAllText(name, result);
+                Terminal.WriteText("Saved result to file: "+name, ConsoleColor.Green, Console.BackgroundColor);
+            }
+            catch (Exception error)
+            {
+                Terminal.ErrorWrite(error.Message);
+            }
+            Console.WriteLine();
+        }
+             
+
+        public void show(string profileName)
+        {
+            try
+            {
+                Terminal.WriteText("::Log traffic", ConsoleColor.Green, Console.BackgroundColor);
+
+                List<FortiLogTraffic> result = GetData(profileName);
+                if (result == null) return;
+
+                this.header();
+                var Country = String.Empty;
+
+                foreach (var data in result)
+                {
+                    this.print(data);
+                }
+            }
+            catch (Exception error)
+            {
+                Terminal.ErrorWrite(error.Message);
+            }
+            Console.WriteLine();
+        }
+    }    
 }
