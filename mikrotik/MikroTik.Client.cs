@@ -54,7 +54,6 @@ namespace MikroTik.Client
 
 
 
-
         public MikroTikClientRestApi(string address, string user, string passw)
         {
             LastError = "";
@@ -165,6 +164,12 @@ namespace MikroTik.Client
                     json = await response.Content.ReadAsStringAsync();
                     json = json.Replace("\0", "");
                     Debug.WriteLine(" -> RESPONDE DATA:" + json);
+
+                    var cache = new DataCache();
+                    cache.LoadConfig();
+                    var cacheData = cache.Find(url);
+                    if (cacheData != null)
+                        cache.RemoveCacheFile(url);
                 }
                 else
                 {
@@ -220,6 +225,11 @@ namespace MikroTik.Client
                     json = await response.Content.ReadAsStringAsync();
                     json = json.Replace("\0", "");
                     Debug.WriteLine(" -> RESPONDE DATA:" + json);
+                    var cache = new DataCache();
+                    cache.LoadConfig();
+                    var cacheData = cache.Find(url);
+                    if (cacheData != null)
+                        cache.RemoveCacheFile(url);
                 }
                 else
                 {
@@ -317,7 +327,8 @@ namespace MikroTik.Client
                 if (OnEventRequest != null && callEvents)
                     OnEventRequest(url, null);
 
-                response = await client.PutAsync(url, content);
+                response = await client.DeleteAsync(url);
+                Debug.WriteLine("Delete status code=" + (int)response.StatusCode);
 
                 var json = "";
                 if ((int)response.StatusCode == 204)
@@ -325,6 +336,12 @@ namespace MikroTik.Client
                     json = await response.Content.ReadAsStringAsync();
                     json = json.Replace("\0", "");
                     Debug.WriteLine(" -> RESPONDE DATA:" + json);
+
+                    var cache = new DataCache();
+                    cache.LoadConfig();
+                    var cacheData = cache.Find(url);
+                    if (cacheData != null) 
+                        cache.RemoveCacheFile(url);
                 }
                 else
                 {
@@ -1407,7 +1424,7 @@ namespace MikroTik.Client
 
         public async Task<(bool, object)> ExecuteScriptAsync(string id)
         {
-            string Url = String.Format("{0}system/script", MainRouterUrl);
+            string Url = String.Format("{0}system/script/run", MainRouterUrl);
 
             try
             {
@@ -1434,6 +1451,7 @@ namespace MikroTik.Client
 
                 var error = JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
                 LastError = error.GetDetailMessage();
+
 
                 if (OnEventResponde != null && callEvents)
                     OnEventResponde(responde.statusCode, error);
@@ -1479,6 +1497,82 @@ namespace MikroTik.Client
             }
 
             return (false);
+        }
+
+        /***************************************************************************************************
+               DELETE SCRIPT
+        ****************************************************************************************************/
+        public async Task<(bool, object)> DeleteScriptAsync(string id)
+        {
+            string Url = String.Format("{0}system/script/{1}", MainRouterUrl, id);
+
+            try
+            {
+                MikroTikRespondeRequest responde = await SendDelete(Url);
+                if (responde == null) return (false, null);
+
+                if (responde.statusCode == 204)
+                {
+
+                    if (OnEventResponde != null && callEvents)
+                    {
+                        OnEventResponde(responde.statusCode, null);
+                    }
+
+                    if (OnEventSuccess != null && callEvents)
+                    {
+                        OnEventSuccess(null);
+                    }
+
+                    return (true, null);
+                }
+
+                var error = JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
+                LastError = error.GetDetailMessage();
+
+                if (OnEventResponde != null && callEvents)
+                    OnEventResponde(responde.statusCode, error);
+
+                if (OnEventFailed != null && callEvents)
+                    OnEventFailed(error);
+
+                return (false, error);
+            }
+            catch (Exception e)
+            {
+                LastError = "Exception: " + e.Message;
+                if (OnEventError != null && callEvents)
+                    OnEventError(LastError);
+            }
+
+            return (false, null);
+        }
+
+        public bool DeleteScript(string id)
+        {
+            bool res = false;
+            object data;
+            try
+            {
+                callEvents = false;
+
+                var t = Task.Run(() =>
+                {
+                    return DeleteScriptAsync(id);
+                });
+                (res, data) = t.Result;
+
+                callEvents = true;
+                return res;
+            }
+            catch (Exception e)
+            {
+                callEvents = true;
+
+                LastError = "Exception:" + e.Message;
+            }
+
+            return false;
         }
 
 
@@ -2337,7 +2431,10 @@ namespace MikroTik.Client
                 MikroTikRespondeRequest responde = await SendPatch(Url, scheduler);
                 if (responde == null) return (false, null);
 
+               var json =  JsonSerializer.Serialize(scheduler);
+    
                 Debug.WriteLine("[UpdateSchedulerAsync] Responde StatusCode=" + responde.statusCode.ToString());
+                Debug.WriteLine(json);
                 if (responde.statusCode == 200)
                 {
                     if (OnEventResponde != null && callEvents)
@@ -2404,7 +2501,7 @@ namespace MikroTik.Client
             return (false);
         }
 
-        public mtSchedulerInfo UpdateScheduler2(string id, mtNewScheduler scheduler)
+      /*  public mtSchedulerInfo UpdateScheduler2(string id, mtNewScheduler scheduler)
         {
             bool res = false;
             object data;
@@ -2431,8 +2528,88 @@ namespace MikroTik.Client
 
             return (null);
         }
+        */
 
 
+        /***************************************************************************************************
+                DELETE SCHEDULER
+            ****************************************************************************************************/
+
+        public async Task<(bool, object)> DeleteSchedulerAsync(string id)
+        {
+            string Url = String.Format("{0}system/scheduler/{1}", MainRouterUrl, id);
+
+            try
+            {
+                MikroTikRespondeRequest responde = await SendDelete(Url);
+                if (responde == null) return (false, null);
+
+                Debug.WriteLine("[UpdateSchedulerAsync] Responde StatusCode=" + responde.statusCode.ToString());
+                if (responde.statusCode == 204)
+                {
+                    if (OnEventResponde != null && callEvents)
+                    {
+                        OnEventResponde(responde.statusCode, null);
+                    }
+
+                    if (OnEventSuccess != null && callEvents)
+                    {
+                        OnEventSuccess(null);
+                    }
+
+                    return (true, null);
+                }
+
+                var error = JsonSerializer.Deserialize<mtErrorMessage>(responde.data.ToString());
+                LastError = error.GetDetailMessage();
+
+
+                if (OnEventResponde != null && callEvents)
+                    OnEventResponde(responde.statusCode, error);
+
+                if (OnEventFailed != null && callEvents)
+                    OnEventFailed(error);
+
+                return (false, error);
+            }
+            catch (Exception e)
+            {
+
+                LastError = "Exception:" + e.Message;
+                if (OnEventError != null && callEvents)
+                    OnEventError(LastError);
+            }
+
+            return (false, null);
+        }
+
+
+
+        public bool DeleteScheduler(string id)
+        {
+            bool res = false;
+            object data;
+            try
+            {
+                callEvents = false;
+                var t = Task.Run(() =>
+                {
+                    return DeleteSchedulerAsync(id);
+                });
+                (res, data) = t.Result;
+
+                callEvents = true;
+                return res;
+            }
+            catch (Exception e)
+            {
+                callEvents = true;
+
+                LastError = "Exception:" + e.Message;
+            }
+
+            return (false);
+        }
 
         /***************************************************************************************************
         GET ALL RADIUS SERVICES -

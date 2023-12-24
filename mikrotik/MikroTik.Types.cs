@@ -169,7 +169,7 @@ namespace MikroTik.Types
         public string Name { get; set; }
         
         [JsonPropertyName("disabled")]
-        public bool  Disabled { get; set; }
+        public string Disabled { get; set; }
         
         [JsonPropertyName("interval")]
         public string Intervaal { get; set; }
@@ -204,7 +204,7 @@ namespace MikroTik.Types
         {
             Comment = String.Empty;
             Name= String.Empty;
-            Disabled = false;
+            Disabled = "false";
             Id  = String.Empty;
             Intervaal= String.Empty;
             NextRun= String.Empty;
@@ -214,6 +214,19 @@ namespace MikroTik.Types
             OnEvent= String.Empty;
             Owner= String.Empty;
             Policy= String.Empty;
+        }
+
+        public mtNewScheduler CopyToNewScheduler()
+        {
+            var mt = new mtNewScheduler(); 
+            mt.Name = Name;
+            mt.StartTime = StartTime;
+            mt.StartDate = StartDate;
+            mt.Intervaal = Intervaal;
+            mt.Disabled = Disabled;
+            mt.OnEvent  = OnEvent;
+
+            return mt;
         }
     }
 
