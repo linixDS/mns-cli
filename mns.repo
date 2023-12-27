@@ -1,0 +1,19 @@
+{
+    "name": "mns",
+    "description": "Repository mns-cli",
+    "update" : "2024-12-24 12:00:00",
+
+    "packages" : [
+        {
+            "package": {
+                            "name": "fortigate",
+                            "version":"1.0.0.0",
+                            "author":"Dariusz Marcisz",
+                            "licence":"GPL",
+                            "description":"Managment Fortigate devices"
+                        }, 
+
+            "link" : "htt[s://]"
+        }
+    ]
+}

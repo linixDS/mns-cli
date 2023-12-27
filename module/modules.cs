@@ -7,9 +7,75 @@ using System.Text.Json;
 using System.Text.Json.Serialization;  
 using Core;
 using Runtime;
+using System.IO.Compression;
+using System.Net.Mail;
 
 namespace module
 {
+    public class RemoteRepository
+    {
+        [JsonPropertyName("name")]
+        public string Name { get; set; }   
+
+        [JsonPropertyName("description")]
+        public string Description { get; set; }          
+
+        [JsonPropertyName("update")]
+        public string LastUpdate { get; set; }    
+
+        [JsonPropertyName("package")]   
+        public List<RemotePackage> Packages{ get; set; }      
+
+        public RemoteRepository()
+        {
+            Name = "";
+            Description = "";
+            LastUpdate = "";
+            Packages = new List<RemotePackage>();
+        }
+    }
+
+    public class RemotePackage
+    {
+        [JsonPropertyName("package")]
+        public PackageInfo Package{ get; set; }
+
+        [JsonPropertyName("url")]
+        public string url{ get; set; }
+
+        public RemotePackage()
+        {
+            Package = new PackageInfo();
+            url = "";
+        }
+    }
+
+
+    public class LocalRepository
+    {
+        [JsonPropertyName("name")]
+        public string Name { get; set; }
+
+        [JsonPropertyName("url")]
+        public string Url { get; set; }    
+
+
+        public LocalRepository()
+        {
+            Name = "";
+            Url = "";
+        }
+    }
+
+    public class RepoBaseList
+    {
+        List<LocalRepository> Repository;
+
+        public RepoBaseList()
+        {
+            Repository = new List<LocalRepository>();
+        }
+    }
 
     public class PackageInfo
     {
@@ -25,6 +91,9 @@ namespace module
         [JsonPropertyName("description")]
         public string Description { get; set; }
 
+        [JsonPropertyName("type")]
+        public int TypePackage { get; set; }        
+
         public PackageInfo()
         {
             Name = String.Empty;
@@ -32,30 +101,10 @@ namespace module
             Author = String.Empty;
             Licence = String.Empty;
             Description = String.Empty;
+            TypePackage = 1;
         }
     }
     
-    public class PACKAGECLASS
-    {
-        public static PackageInfo Load(string path)
-        {
-            try
-            {
-                var fileName = path+Path.DirectorySeparatorChar+"package.json";
-                if (!File.Exists(fileName))  return null;
-
-                string json = File.ReadAllText(fileName);
-                var info = JsonSerializer.Deserialize<PackageInfo>(json);
-    
-                return info;
-            }
-            catch (Exception error)
-            {
-            //    Terminal.ErrorWrite("Error: " + error.Message);
-                return null;
-            }
-        }
-    }
     
     public class HELPCLASS
     {
@@ -71,7 +120,7 @@ namespace module
             Console.WriteLine("SYNTEX");
             Console.WriteLine("\t module help");
             Console.WriteLine("\t module list");
-            Console.WriteLine("\t module mngt");
+            Console.WriteLine("\t module package");
             Console.WriteLine("\t module repo");
             Console.WriteLine("");
         }
@@ -118,6 +167,25 @@ namespace module
         }
     }
 
+
+    public class REPOCLASS
+    {
+        public void help()
+        {
+            Console.Clear();
+            Console.WriteLine("NAME");
+            Console.WriteLine("\t Module.Repo ");
+            Console.WriteLine("");
+            Console.WriteLine("SHORT DESCRIPTION");
+            Console.WriteLine("\tManagment repositories");
+            Console.WriteLine("");
+            Console.WriteLine("SYNTEX");
+            Console.WriteLine("\t module repo help");
+            Console.WriteLine("\t module repo add <input: url>");
+            Console.WriteLine("\t module repo remove <input: name>");
+        }    
+    }
+
     public class LISTCLASS
     {
         public LISTCLASS()
@@ -161,28 +229,116 @@ namespace module
         }
     }
     
-    public class MNGTCLASS
+    public class PACKAGECLASS
     {
+        public static PackageInfo Load(string path)
+        {
+            try
+            {
+                var fileName = path+Path.DirectorySeparatorChar+"package.json";
+                if (!File.Exists(fileName))  return null;
+
+                string json = File.ReadAllText(fileName);
+                var info = JsonSerializer.Deserialize<PackageInfo>(json);
+    
+                return info;
+            }
+            catch (Exception error)
+            {
+            //    Terminal.ErrorWrite("Error: " + error.Message);
+                return null;
+            }
+        }
+
+        public static void Clear(string path)
+        {
+            try
+            {
+                Directory.Delete(path, true);
+            }
+            catch (Exception error)
+            {
+                Terminal.ErrorWrite("Error clear modules: " + error.Message);
+            }
+        }
+
+        public static bool Install(string package)
+        {
+            Directory.SetCurrentDirectory("..");
+            var path = Environment.CurrentDirectory;
+            string name = Path.GetFileNameWithoutExtension(package);
+            var pathPackage = path+Path.DirectorySeparatorChar+name;
+
+            try
+            {
+                Terminal.WriteText("Installing package: "+name, ConsoleColor.Green, Console.BackgroundColor);
+
+                if (!File.Exists(package)) {
+                    Terminal.ErrorWrite("Error: No found package:"+package);
+                    return false;
+                }
+
+
+
+                Terminal.WriteText("    -> Extracting package: "+path, ConsoleColor.White, Console.BackgroundColor);
+                ZipFile.ExtractToDirectory(package, path, true);
+                
+                Terminal.WriteText("    -> Checking package structure "+pathPackage, ConsoleColor.White, Console.BackgroundColor);
+                var info = PACKAGECLASS.Load(pathPackage);
+                if (info == null){
+                    Terminal.ErrorWrite("Error: This is not package (No found header)!!!");
+                    
+                    PACKAGECLASS.Clear(pathPackage);
+                    return false;
+                }
+
+                if (info.Name != name){
+                    Terminal.ErrorWrite("Error: The data structure does not match.");
+                    PACKAGECLASS.Clear(pathPackage);
+                    return false;   
+                }
+
+      
+                Terminal.WriteText("    -> Installed package", ConsoleColor.Green, Console.BackgroundColor);
+
+            }
+            catch (Exception error)
+            {
+                Terminal.ErrorWrite("Error: " + error.Message);
+                PACKAGECLASS.Clear(pathPackage);
+                return false;
+            }
+
+            return true;
+
+        }        
+
         public void help()
         {
             Console.Clear();
             Console.WriteLine("NAME");
-            Console.WriteLine("\t Module.MNGT ");
+            Console.WriteLine("\t Module.Package ");
             Console.WriteLine("");
             Console.WriteLine("SHORT DESCRIPTION");
-            Console.WriteLine("\tManagment modules");
+            Console.WriteLine("\tManagment packages");
             Console.WriteLine("");
             Console.WriteLine("SYNTEX");
-            Console.WriteLine("\t module mngt help");
-            Console.WriteLine("\t module mngt remove <input: name>");
-            Console.WriteLine("");
+            Console.WriteLine("\t module package help");
+            Console.WriteLine("\t module package install <input: fullname>");
+            Console.WriteLine("\t module package remove <input: name>");
         }        
+        
+        public void install(string package)
+        {
+            PACKAGECLASS.Install(package);
+        }
+
         
         public void remove(string name)
         {
-            Terminal.WriteText("::Remove module "+name, ConsoleColor.Green, Console.BackgroundColor);
+            Terminal.WriteText("::Remove package "+name, ConsoleColor.Green, Console.BackgroundColor);
             Console.WriteLine();
-            Terminal.WriteText("You are sure is deleting module: "+name+"?  (y/N):  ", ConsoleColor.Yellow, Console.BackgroundColor);
+            Terminal.WriteText("You are sure is deleting package: "+name+"?  (y/N):  ", ConsoleColor.Yellow, Console.BackgroundColor);
             
             var key = ConsoleKey.Enter;
             while (key != ConsoleKey.Y) 
@@ -205,6 +361,19 @@ namespace module
                     Terminal.ErrorWrite("Error: No found module: "+name);
                     return;
                 }
+
+                var info = PACKAGECLASS.Load(path);
+                if (info == null){
+                    Terminal.ErrorWrite("Error: This is not package (No found header)!!!");
+                    return;                    
+                }
+
+                if (info.TypePackage == 1)
+                {
+                    Terminal.ErrorWrite("Error: Cannot remove is system module !");
+                    return;                    
+                }               
+
                 Terminal.WriteText("Removing module: "+name, ConsoleColor.Yellow, Console.BackgroundColor);
                 Directory.Delete(path, true);
                 Terminal.WriteText("Removed module "+name, ConsoleColor.Green, Console.BackgroundColor);
@@ -215,5 +384,9 @@ namespace module
             }
             Console.WriteLine();
         }
-    }    
+
+
+    }
+
+
 }
